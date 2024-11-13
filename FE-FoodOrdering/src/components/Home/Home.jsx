@@ -1,8 +1,11 @@
 import React from "react";
 import "./Home.css";
 import MultiItemCarousel from "./MultiItemCarousel";
+import RestaurantCards from "../Restaurant/RestaurantCards";
 
 const Home = () => {
+  const fakeData = [1, 1, 1, 1, 1, 1, 1, 1];
+
   return (
     <div>
       {/* Banner */}
@@ -24,8 +27,20 @@ const Home = () => {
       </section>
 
       {/* Top Meals */}
-      <section className="px-20 py-10">
+      <section className="px-10 lg:px-20 py-10">
         <MultiItemCarousel />
+      </section>
+
+      {/* Restaurant List */}
+      <section className="px-10 lg:px-20 py-10">
+        <h1 className="text-2xl font-semibold text-gray-400 mb-10">
+          Order From Our Handpicked Favorites
+        </h1>
+        <div className="grid sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-5">
+          {fakeData.map((item, index) => (
+            <RestaurantCards key={index} />
+          ))}
+        </div>
       </section>
     </div>
   );

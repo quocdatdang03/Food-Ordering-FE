@@ -4,6 +4,8 @@ import { ThemeProvider } from "@emotion/react";
 import { darkTheme } from "./Theme/DarkTheme";
 import { CssBaseline } from "@mui/material";
 import Home from "./components/Home/Home";
+import RestaurantDetail from "./components/Restaurant/RestaurantDetail";
+import Cart from "./components/Cart/Cart";
 
 function App() {
   const [count, setCount] = useState(0);
@@ -13,7 +15,9 @@ function App() {
       <ThemeProvider theme={darkTheme}>
         <CssBaseline />
         <Navbar />
-        <Home />
+        {/* <Home /> */}
+        {/* <RestaurantDetail /> */}
+        <Cart />
       </ThemeProvider>
     </>
   );
