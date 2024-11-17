@@ -1,4 +1,5 @@
 import {
+  Alert,
   Button,
   FormControl,
   InputLabel,
@@ -7,8 +8,15 @@ import {
   TextField,
 } from "@mui/material";
 import { useFormik } from "formik";
-import React from "react";
+import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { registerFormValidation } from "./validation/registerFormValidation";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  clearAuthError,
+  clearAuthSuccess,
+  registerUserAction,
+} from "../../Redux/Auth/Action";
 
 const initialValues = {
   fullName: "",
@@ -20,15 +28,33 @@ const initialValues = {
 
 const RegisterForm = () => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const { authReducer } = useSelector((store) => store);
 
   // Handling Form :
   const formik = useFormik({
     initialValues: initialValues,
-    // validationSchema: newAddressFormValidation,
+    validationSchema: registerFormValidation,
     onSubmit: (values) => {
-      console.log(values);
+      const requestData = {
+        userData: values,
+        navigate,
+      };
+
+      dispatch(registerUserAction(requestData));
+
+      // reset form after register success :
     },
   });
+
+  useEffect(() => {
+    if (authReducer.success) formik.resetForm();
+
+    return () => {
+      if (authReducer.error) dispatch(clearAuthError());
+      if (authReducer.success) dispatch(clearAuthSuccess());
+    };
+  }, [dispatch, authReducer.error, authReducer.success]);
 
   return (
     <div className="w-full rounded lg shadow md:mt-0 sm:max-w-lg xl:p-0">
@@ -36,6 +62,16 @@ const RegisterForm = () => {
         <h1 className="text-xl font-bold leading-tight tracking-tight text-white md:text-2xl">
           Sign up
         </h1>
+        {authReducer.error && (
+          <Alert variant="filled" severity="error">
+            {authReducer.error}
+          </Alert>
+        )}
+        {authReducer.success && (
+          <Alert variant="filled" severity="success">
+            <span className="text-white">{authReducer.success}</span>
+          </Alert>
+        )}
         <form className=" text-white" onSubmit={formik.handleSubmit}>
           <div className="grid grid-cols-2 gap-x-3 ">
             <div>
@@ -53,15 +89,12 @@ const RegisterForm = () => {
                 type="text"
                 name="fullName"
                 onChange={formik.handleChange}
-                // onBlur={formik.handleBlur}
+                onBlur={formik.handleBlur}
                 value={formik.values.fullName}
-                // error={
-                //   formik.errors.streetAddress &&
-                //   Boolean(formik.errors.streetAddress)
-                // }
-                // helperText={
-                //   formik.errors.streetAddress && formik.errors.streetAddress
-                // }
+                error={
+                  formik.errors.fullName && Boolean(formik.errors.fullName)
+                }
+                helperText={formik.errors.fullName && formik.errors.fullName}
               />
             </div>
             <div>
@@ -76,7 +109,10 @@ const RegisterForm = () => {
                 type="text"
                 name="email"
                 onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
                 value={formik.values.email}
+                error={formik.errors.email && Boolean(formik.errors.email)}
+                helperText={formik.errors.email && formik.errors.email}
               />
             </div>
           </div>
@@ -95,7 +131,10 @@ const RegisterForm = () => {
               type="password"
               name="password"
               onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
               value={formik.values.password}
+              error={formik.errors.password && Boolean(formik.errors.password)}
+              helperText={formik.errors.password && formik.errors.password}
             />
           </div>
           <div>
@@ -113,7 +152,15 @@ const RegisterForm = () => {
               type="password"
               name="confirmPassword"
               onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
               value={formik.values.confirmPassword}
+              error={
+                formik.errors.confirmPassword &&
+                Boolean(formik.errors.confirmPassword)
+              }
+              helperText={
+                formik.errors.confirmPassword && formik.errors.confirmPassword
+              }
             />
           </div>
           <div>

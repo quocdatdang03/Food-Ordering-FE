@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Navbar from "./components/Navbar/Navbar";
 import { ThemeProvider } from "@emotion/react";
 import { darkTheme } from "./Theme/DarkTheme";
@@ -10,9 +10,18 @@ import RestaurantDetail from "./components/Restaurant/RestaurantDetail";
 import Cart from "./components/Cart/Cart";
 import Profile from "./components/Profile/Profile";
 import Auth from "./components/Auth/Auth";
+import { useDispatch, useSelector } from "react-redux";
+import { getUserAction } from "./Redux/Auth/Action";
 
 function App() {
-  const [count, setCount] = useState(0);
+  const dispatch = useDispatch();
+  const jwtToken = localStorage.getItem("jwtToken");
+  const { authReducer } = useSelector((store) => store);
+
+  useEffect(() => {
+    if (authReducer.jwtToken || jwtToken)
+      dispatch(getUserAction(authReducer.jwtToken || jwtToken));
+  }, [authReducer.jwtToken]);
 
   return (
     <>

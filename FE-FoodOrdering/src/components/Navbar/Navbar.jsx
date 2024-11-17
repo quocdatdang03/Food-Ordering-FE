@@ -4,9 +4,19 @@ import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import { Avatar, Badge, IconButton } from "@mui/material";
 import { useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
 
 const Navbar = () => {
   const navigate = useNavigate();
+  const { authReducer } = useSelector((store) => store);
+
+  const handleNavigateToProfile = () => {
+    if (authReducer.user.role === "ROLE_CUSTOMER") {
+      navigate("/my-profile");
+    } else if (authReducer.user.role === "ROLE_RESTAURANT_OWNER") {
+      navigate("/admin/restaurants");
+    }
+  };
 
   return (
     <div className="px-5 z-50 py-3 bg-[#e91e63] lg:px-20 flex justify-between">
@@ -23,16 +33,16 @@ const Navbar = () => {
           </IconButton>
         </div>
         <div>
-          {false ? (
+          {authReducer.user ? (
             <Avatar
-              onClick={() => navigate("/my-profile")}
+              onClick={handleNavigateToProfile}
               style={{
                 backgroundColor: "white",
                 color: "pink",
                 cursor: "pointer",
               }}
             >
-              M
+              {authReducer.user.fullName[0].toUpperCase()}
             </Avatar>
           ) : (
             <IconButton onClick={() => navigate("/account/login")}>
