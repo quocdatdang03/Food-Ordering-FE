@@ -13,6 +13,9 @@ const Favorites = () => {
           return <RestaurantCards key={index} item={item} />;
         })}
       </div>
+      {authReducer.favorites.length === 0 && (
+        <div className="text-lg">Your favorite restaurants are empty!</div>
+      )}
     </div>
   );
 };
