@@ -88,7 +88,7 @@ export const addToFavoritesAction =
   (jwtToken, restaurantId) => async (dispatch) => {
     dispatch({ type: ADD_TO_FAVORITE_REQUEST });
     try {
-      const response = axiosAPI.put(
+      const response = await axiosAPI.put(
         "/restaurants/" + restaurantId + "/favorites",
         {},
         {

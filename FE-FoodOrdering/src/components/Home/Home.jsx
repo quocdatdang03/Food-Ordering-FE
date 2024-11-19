@@ -1,9 +1,19 @@
-import React from "react";
+import React, { useEffect } from "react";
 import "./Home.css";
 import MultiItemCarousel from "./MultiItemCarousel";
 import RestaurantCards from "../Restaurant/RestaurantCards";
+import { useDispatch, useSelector } from "react-redux";
+import { getAllRestaurantAction } from "../../Redux/Restaurant/Action";
 
 const Home = () => {
+  const dispatch = useDispatch();
+  const { restaurantReducer } = useSelector((store) => store);
+  const jwtToken = localStorage.getItem("jwtToken");
+
+  useEffect(() => {
+    // get all restaurants :
+    dispatch(getAllRestaurantAction(jwtToken));
+  }, []);
   const fakeData = [1, 1, 1, 1, 1, 1, 1, 1];
 
   return (
@@ -37,8 +47,8 @@ const Home = () => {
           Order From Our Handpicked Favorites
         </h1>
         <div className="grid sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-5">
-          {fakeData.map((item, index) => (
-            <RestaurantCards key={index} />
+          {restaurantReducer.restaurants.map((item, index) => (
+            <RestaurantCards key={index} item={item} />
           ))}
         </div>
       </section>

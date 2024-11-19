@@ -27,7 +27,7 @@ export const getAllRestaurantAction = (jwtToken) => async (dispatch) => {
   dispatch({ type: GET_ALL_RESTAURANT_REQUEST });
 
   try {
-    const response = axiosAPI.get("/restaurants", {
+    const response = await axiosAPI.get("/restaurants", {
       headers: {
         Authorization: "Bearer " + jwtToken,
       },
@@ -45,7 +45,7 @@ export const getRestaurantByIdAction =
     dispatch({ type: GET_RESTAURANT_BY_ID_REQUEST });
 
     try {
-      const response = axiosAPI.get(`/restaurants/${restaurantId}`, {
+      const response = await axiosAPI.get(`/restaurants/${restaurantId}`, {
         headers: {
           Authorization: "Bearer " + jwtToken,
         },
@@ -62,7 +62,7 @@ export const getRestaurantByOwnerIdAction = (jwtToken) => async (dispatch) => {
   dispatch({ type: GET_RESTAURANT_BY_OWNER_ID_REQUEST });
 
   try {
-    const response = axiosAPI.get(`/admin/restaurants/user`, {
+    const response = await axiosAPI.get(`/admin/restaurants/user`, {
       headers: {
         Authorization: "Bearer " + jwtToken,
       },
@@ -82,7 +82,7 @@ export const createRestaurantAction = (requestData) => async (dispatch) => {
   dispatch({ type: CREATE_RESTAURANT_REQUEST });
 
   try {
-    const response = axiosAPI.post(
+    const response = await axiosAPI.post(
       "/admin/restaurants",
       requestData.restaurantData,
       {
@@ -103,7 +103,7 @@ export const updateRestaurantAction = (requestData) => async (dispatch) => {
   dispatch({ type: UPDATE_RESTAURANT_REQUEST });
 
   try {
-    const response = axiosAPI.put(
+    const response = await axiosAPI.put(
       `/admin/restaurants/${requestData.restaurantId}`,
       requestData.restaurantData,
       {
@@ -125,11 +125,14 @@ export const deleteRestaurantAction =
     dispatch({ type: DELETE_RESTAURANT_REQUEST });
 
     try {
-      const response = axiosAPI.delete(`/admin/restaurants/${restaurantId}`, {
-        headers: {
-          Authorization: "Bearer " + jwtToken,
-        },
-      });
+      const response = await axiosAPI.delete(
+        `/admin/restaurants/${restaurantId}`,
+        {
+          headers: {
+            Authorization: "Bearer " + jwtToken,
+          },
+        }
+      );
 
       dispatch({ type: DELETE_RESTAURANT_SUCCESS, payload: restaurantId });
     } catch (error) {
@@ -143,7 +146,7 @@ export const updateRestaurantStatusAction =
     dispatch({ type: UPDATE_RESTAURANT_STATUS_REQUEST });
 
     try {
-      const response = axiosAPI.patch(
+      const response = await axiosAPI.patch(
         `/admin/restaurants/${restaurantId}/status`,
         {},
         {

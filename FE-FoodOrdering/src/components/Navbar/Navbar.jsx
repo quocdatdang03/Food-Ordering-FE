@@ -22,7 +22,10 @@ const Navbar = () => {
     <div className="px-5 z-50 py-3 bg-[#e91e63] lg:px-20 flex justify-between">
       {/* Logo */}
       <div className="flex items-center cursor-pointer">
-        <div className="logo font-semibold font-sans text-2xl select-none">
+        <div
+          className="logo font-semibold font-sans text-2xl select-none"
+          onClick={() => navigate("/")}
+        >
           Food Order
         </div>
       </div>

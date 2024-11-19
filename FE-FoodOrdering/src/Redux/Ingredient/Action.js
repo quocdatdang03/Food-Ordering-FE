@@ -25,7 +25,7 @@ export const getIngredientsOfRestaurantAction =
     dispatch({ type: GET_INGREDIENT_BY_RESTAURANT_ID_REQUEST });
 
     try {
-      const response = axiosAPI.get(
+      const response = await axiosAPI.get(
         `/admin/ingredients/restaurant/${restaurantId}`,
         {
           headers: {
@@ -52,7 +52,7 @@ export const getIngredientCategoryByIdAction =
     dispatch({ type: GET_INGREDIENT_CATEGORY_BY_ID_REQUEST });
 
     try {
-      const response = axiosAPI.get(
+      const response = await axiosAPI.get(
         `/admin/ingredients/category/${categoryId}`,
         {
           headers: {
@@ -79,7 +79,7 @@ export const getIngredientCategoriesOfRestaurantAction =
     dispatch({ type: GET_INGREDIENT_CATEGORY_BY_RESTAURANT_ID_REQUEST });
 
     try {
-      const response = axiosAPI.get(
+      const response = await axiosAPI.get(
         `/admin/ingredients/restaurant/${restaurantId}/category`,
         {
           headers: {
@@ -106,7 +106,7 @@ export const createIngredientAction =
     dispatch({ type: CREATE_INGREDIENT_REQUEST });
 
     try {
-      const response = axiosAPI.post(`/admin/ingredients`, requestData, {
+      const response = await axiosAPI.post(`/admin/ingredients`, requestData, {
         headers: {
           Authorization: "Bearer " + jwtToken,
         },
@@ -130,7 +130,7 @@ export const createIngredientCategoryAction =
     dispatch({ type: CREATE_INGREDIENT_CATEGORY_REQUEST });
 
     try {
-      const response = axiosAPI.post(
+      const response = await axiosAPI.post(
         `/admin/ingredients/category`,
         requestData,
         {
@@ -158,7 +158,7 @@ export const updateStockOfIngredientAction =
     dispatch({ type: UPDATE_STOCK_REQUEST });
 
     try {
-      const response = axiosAPI.patch(
+      const response = await axiosAPI.patch(
         `/admin/ingredients/${ingredientId}/stock`,
         {},
         {
