@@ -24,7 +24,24 @@ const fakeDatas = [
   },
 ];
 
-const MenuCards = () => {
+const MenuCards = ({ item }) => {
+  console.log(item);
+
+  const categorizeIngredients = () => {
+    return item.ingredients.reduce((acc, item) => {
+      const { category } = item;
+      console.log(category.name);
+
+      if (!acc[category.name]) {
+        acc[category.name] = [];
+      }
+
+      acc[category.name].push(item);
+
+      return acc;
+    }, {});
+  };
+
   return (
     <div className="w-full">
       <Accordion>
@@ -36,20 +53,15 @@ const MenuCards = () => {
             <div className="flex gap-x-5">
               <img
                 className="w-[7rem] h-[7rem] object-cover rounded-sm"
-                src="https://images.pexels.com/photos/1639557/pexels-photo-1639557.jpeg?auto=compress&cs=tinysrgb&w=600"
-                alt=""
+                src={item?.images?.[0]}
+                alt={item?.images?.[0]}
               />
               <div className="space-y-5">
-                <h1 className="text-xl font-bold">Burger</h1>
+                <h1 className="text-xl font-bold">{item.name}</h1>
                 <p>
-                  $<span>199</span>
+                  $<span>{item.price}</span>
                 </p>
-                <p className="text-gray-500">
-                  Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                  Temporibus blanditiis esse deleniti assumenda fugit ratione
-                  facilis non voluptatem recusandae et optio cumque quisquam
-                  nihil eius nobis earum sed, veniam itaque.
-                </p>
+                <p className="text-gray-500">{item.description}</p>
               </div>
             </div>
           </div>
@@ -57,17 +69,17 @@ const MenuCards = () => {
         <AccordionDetails>
           <form>
             <div className="flex flex-wrap gap-5 mb-5">
-              {fakeDatas.map((item, index) => {
+              {Object.keys(categorizeIngredients()).map((key, index) => {
                 return (
                   <div key={index}>
-                    <h2>{item.category}</h2>
+                    <h2>{key}</h2>
                     <FormGroup>
-                      {item.ingredients.map((ingredient, index) => {
+                      {categorizeIngredients()[key].map((item, index) => {
                         return (
                           <FormControlLabel
-                            key={index}
+                            key={item.id}
                             control={<Checkbox />}
-                            label={ingredient}
+                            label={item.name}
                           />
                         );
                       })}

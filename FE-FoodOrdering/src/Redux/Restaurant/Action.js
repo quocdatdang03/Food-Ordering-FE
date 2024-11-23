@@ -15,6 +15,9 @@ import {
   GET_RESTAURANT_BY_OWNER_ID_FAILURE,
   GET_RESTAURANT_BY_OWNER_ID_REQUEST,
   GET_RESTAURANT_BY_OWNER_ID_SUCCESS,
+  GET_RESTAURANTS_CATEGORY_FAILURE,
+  GET_RESTAURANTS_CATEGORY_REQUEST,
+  GET_RESTAURANTS_CATEGORY_SUCCESS,
   UPDATE_RESTAURANT_FAILURE,
   UPDATE_RESTAURANT_REQUEST,
   UPDATE_RESTAURANT_STATUS_FAILURE,
@@ -168,4 +171,29 @@ export const updateRestaurantStatusAction =
 
 // ------------ EVENTS :
 // ------------ CATEGORY:
-// export const createCategory = (requestData, jwtToken) => async (dispatch) => {};
+export const getRestaurantCategoriesAction =
+  (jwtToken, restaurantId) => async (dispatch) => {
+    dispatch({ type: GET_RESTAURANTS_CATEGORY_REQUEST });
+
+    try {
+      const response = await axiosAPI.get(
+        `/categories/restaurant/${restaurantId}`,
+        {
+          headers: {
+            Authorization: "Bearer " + jwtToken,
+          },
+        }
+      );
+
+      dispatch({
+        type: GET_RESTAURANTS_CATEGORY_SUCCESS,
+        payload: response.data,
+      });
+
+      console.log("GET CATEGORIES OF RESTAURANT SUCCESS: ");
+      console.log(response.data);
+    } catch (error) {
+      console.log(error);
+      dispatch({ type: GET_RESTAURANTS_CATEGORY_FAILURE });
+    }
+  };

@@ -9,10 +9,17 @@ import {
   RadioGroup,
   Typography,
 } from "@mui/material";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import LocationOnIcon from "@mui/icons-material/LocationOn";
 import CalendarTodayIcon from "@mui/icons-material/CalendarToday";
 import MenuCards from "./MenuCard/MenuCards";
+import { useParams } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  getRestaurantByIdAction,
+  getRestaurantCategoriesAction,
+} from "../../Redux/Restaurant/Action";
+import { getMenuItemsByRestaurantIdAction } from "../../Redux/Menu/Action";
 
 const foodTypes = [
   { label: "All", value: "all" },
@@ -30,8 +37,6 @@ const foodCategories = [
   "Pork",
 ];
 
-const menuCards = [1, 1, 1, 1, 1, 1];
-
 const RestaurantDetail = () => {
   const [foodType, setFoodtype] = useState("all");
   const [foodCategory, setFoodCategory] = useState("All");
@@ -44,6 +49,30 @@ const RestaurantDetail = () => {
   const handleChangeFoodCategory = (e) => {
     setFoodCategory(e.target.value);
   };
+
+  const { city, restaurantName, id } = useParams();
+  const dispatch = useDispatch();
+  const jwtToken = localStorage.getItem("jwtToken");
+  const { restaurantReducer, menuItemReducer } = useSelector((store) => store);
+  const restaurant = restaurantReducer.restaurant;
+
+  useEffect(() => {
+    // get restaurant details by id
+    dispatch(getRestaurantByIdAction(jwtToken, id));
+
+    // get categories of restaurant
+    dispatch(getRestaurantCategoriesAction(jwtToken, id));
+
+    // get all foods of restaurant (this is also using for filtering foods)
+    const requestFoodData = {
+      restaurantId: id,
+      isVegetarian: false,
+      isNonVegetarian: false,
+      isSeasonal: false,
+      foodCateogry: "",
+    };
+    dispatch(getMenuItemsByRestaurantIdAction(jwtToken, requestFoodData));
+  }, []);
 
   return (
     <div className="px-5 lg:px-20 mt-9">
@@ -62,32 +91,27 @@ const RestaurantDetail = () => {
         <div className="w-full h-[40vh] col-span-2">
           <img
             className="w-full h-full object-cover object-center"
-            src="https://images.pexels.com/photos/941861/pexels-photo-941861.jpeg?auto=compress&cs=tinysrgb&w=1200"
+            src={restaurant?.images?.[0]}
           />
         </div>
         <div className="w-full h-[40vh]">
           <img
             className="w-full h-full object-cover object-center"
-            src="https://images.pexels.com/photos/1267320/pexels-photo-1267320.jpeg?auto=compress&cs=tinysrgb&w=1200"
+            src={restaurant?.images?.[1]}
           />
         </div>
         <div className="w-full h-[40vh]">
           <img
             className="w-full h-full object-cover object-center"
-            src="https://images.pexels.com/photos/958545/pexels-photo-958545.jpeg?auto=compress&cs=tinysrgb&w=1200"
+            src={restaurant?.images?.[2]}
           />
         </div>
       </div>
 
       {/* Restaurant Information */}
       <div className="border-b pb-5 border-gray-500">
-        <h1 className="text-4xl font-bold">Indian Fast Food</h1>
-        <p className="mt-2 text-sm text-gray-400">
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. oluta nihil
-          repellat aliquid quia rerum molestias inventore mollitia optio dicta
-          sit pariatur unde nulla explicabo suscipit quae eveniet, illo nam?
-          Exercitationem.
-        </p>
+        <h1 className="text-4xl font-bold">{restaurant?.name}</h1>
+        <p className="mt-2 text-sm text-gray-400">{restaurant?.description}</p>
         <p className="flex items-center text-gray-400 py-3">
           <LocationOnIcon />
           <span className="pl-3">Mumbai captial</span>
@@ -95,7 +119,7 @@ const RestaurantDetail = () => {
         <p className="flex items-center">
           <CalendarTodayIcon className="text-gray-400" />
           <span className="pl-3 text-yellow-500">
-            Mon-Sun: 9.00AM - 9.00PM (Today)
+            {restaurant?.openingHours}
           </span>
         </p>
       </div>
@@ -132,13 +156,13 @@ const RestaurantDetail = () => {
                 value={foodCategory}
                 onChange={handleChangeFoodCategory}
               >
-                {foodCategories.map((item, index) => {
+                {restaurantReducer?.categories.map((item, index) => {
                   return (
                     <FormControlLabel
                       key={index}
-                      value={item}
+                      value={item.name}
                       control={<Radio />}
-                      label={item}
+                      label={item.name}
                     />
                   );
                 })}
@@ -147,8 +171,8 @@ const RestaurantDetail = () => {
           </Card>
         </div>
         <div className="col-span-9 flex flex-col gap-y-8">
-          {menuCards.map((item) => {
-            return <MenuCards />;
+          {menuItemReducer?.menuItems.map((item) => {
+            return <MenuCards key={item.id} item={item} />;
           })}
         </div>
       </div>

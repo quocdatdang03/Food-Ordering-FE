@@ -43,7 +43,7 @@ export const getMenuItemsByRestaurantIdAction =
     dispatch({ type: GET_MENU_ITEM_BY_RESTAURANT_ID_REQUEST });
 
     try {
-      const requestURL = `/foods/${requestData.restaurantId}?isVegetarian=${requestData.isVegetarian}&isNonVegetarian=${requestData.isNonVegetarian}&isSeasonal=${requestData.isSeasonal}&foodCategory=${requestData.foodCateogry}`;
+      const requestURL = `/foods/restaurant/${requestData.restaurantId}?isVegetarian=${requestData.isVegetarian}&isNonVegetarian=${requestData.isNonVegetarian}&isSeasonal=${requestData.isSeasonal}&foodCategory=${requestData.foodCateogry}`;
       const response = await axiosAPI.get(requestURL, {
         headers: {
           Authorization: "Bearer " + jwtToken,
@@ -54,6 +54,9 @@ export const getMenuItemsByRestaurantIdAction =
         type: GET_MENU_ITEM_BY_RESTAURANT_ID_SUCCESS,
         payload: response.data,
       });
+
+      // console.log("GET ALL FOODS OF RESTAURANT SUCCESS");
+      // console.log(response.data);
     } catch (error) {
       console.log(error);
       dispatch({

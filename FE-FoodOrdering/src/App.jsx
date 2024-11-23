@@ -31,7 +31,10 @@ function App() {
           <Navbar />
           <Routes>
             <Route path="/" element={<Home />} />
-            <Route path="/restaurant/:id" element={<RestaurantDetail />} />
+            <Route
+              path="/restaurant/:city/:restaurantName/:id"
+              element={<RestaurantDetail />}
+            />
             <Route path="/cart" element={<Cart />} />
             <Route path="/my-profile/*" element={<Profile />} />
             <Route path="/account/:register" element={<Auth />} />
