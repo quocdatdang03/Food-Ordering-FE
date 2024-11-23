@@ -22,7 +22,7 @@ import {
 import { getMenuItemsByRestaurantIdAction } from "../../Redux/Menu/Action";
 
 const foodTypes = [
-  { label: "All", value: "all" },
+  { label: "All", value: "" },
   { label: "Vegetarian only", value: "vegetarian" },
   { label: "Non-Vegetarian", value: "non_vegetarian" },
   { label: "Seasonal", value: "seasonal" },
@@ -38,8 +38,8 @@ const foodCategories = [
 ];
 
 const RestaurantDetail = () => {
-  const [foodType, setFoodtype] = useState("all");
-  const [foodCategory, setFoodCategory] = useState("All");
+  const [foodType, setFoodtype] = useState("");
+  const [foodCategory, setFoodCategory] = useState("all");
 
   const handleChangeFoodType = (e) => {
     console.log(e.target.value + " - " + e.target.name);
@@ -47,6 +47,7 @@ const RestaurantDetail = () => {
   };
 
   const handleChangeFoodCategory = (e) => {
+    console.log("CURR FOOD CATEGORY: " + e.target.value);
     setFoodCategory(e.target.value);
   };
 
@@ -73,6 +74,22 @@ const RestaurantDetail = () => {
     };
     dispatch(getMenuItemsByRestaurantIdAction(jwtToken, requestFoodData));
   }, []);
+
+  // Filter foods by categories and Food Type
+  useEffect(() => {
+    console.log("FOOD CATEGORY: " + foodCategory);
+    const requestFoodData = {
+      restaurantId: id,
+      isVegetarian: foodType === "vegetarian",
+      isNonVegetarian: foodType === "non_vegetarian",
+      isSeasonal: foodType === "seasonal",
+      foodCategory: foodCategory,
+    };
+
+    console.log(requestFoodData);
+
+    dispatch(getMenuItemsByRestaurantIdAction(jwtToken, requestFoodData));
+  }, [foodCategory, foodType]);
 
   return (
     <div className="px-5 lg:px-20 mt-9">
@@ -156,6 +173,11 @@ const RestaurantDetail = () => {
                 value={foodCategory}
                 onChange={handleChangeFoodCategory}
               >
+                <FormControlLabel
+                  value={"all"}
+                  control={<Radio />}
+                  label={"All"}
+                />
                 {restaurantReducer?.categories.map((item, index) => {
                   return (
                     <FormControlLabel

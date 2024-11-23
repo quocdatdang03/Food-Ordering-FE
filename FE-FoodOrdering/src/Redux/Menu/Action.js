@@ -43,7 +43,8 @@ export const getMenuItemsByRestaurantIdAction =
     dispatch({ type: GET_MENU_ITEM_BY_RESTAURANT_ID_REQUEST });
 
     try {
-      const requestURL = `/foods/restaurant/${requestData.restaurantId}?isVegetarian=${requestData.isVegetarian}&isNonVegetarian=${requestData.isNonVegetarian}&isSeasonal=${requestData.isSeasonal}&foodCategory=${requestData.foodCateogry}`;
+      const requestURL = `/foods/restaurant/${requestData.restaurantId}?isVegetarian=${requestData.isVegetarian}&isNonVegetarian=${requestData.isNonVegetarian}&isSeasonal=${requestData.isSeasonal}&foodCategory=${requestData.foodCategory}`;
+      console.log(requestURL);
       const response = await axiosAPI.get(requestURL, {
         headers: {
           Authorization: "Bearer " + jwtToken,
