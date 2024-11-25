@@ -4,12 +4,14 @@ import { thunk } from "redux-thunk";
 import { restaurantReducer } from "./Restaurant/Reducer";
 import { menuItemReducer } from "./Menu/Reducer";
 import { ingredientReducer } from "./Ingredient/Reducer";
+import { cartReducer } from "./Cart/Reducer";
 
 const rootReducer = combineReducers({
   authReducer: authReducer,
   restaurantReducer: restaurantReducer,
   menuItemReducer: menuItemReducer,
   ingredientReducer: ingredientReducer,
+  cartReducer: cartReducer,
 });
 
 export const store = legacy_createStore(rootReducer, applyMiddleware(thunk));
