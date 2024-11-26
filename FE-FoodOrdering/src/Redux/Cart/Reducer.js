@@ -1,3 +1,4 @@
+import { isCartItemPresentInCart } from "../../config/logic";
 import * as actionTypes from "./ActionType";
 
 const initialStates = {
@@ -40,6 +41,16 @@ export const cartReducer = (state = initialStates, action) => {
       };
 
     case actionTypes.ADD_ITEM_TO_CART_SUCCESS:
+      return {
+        ...state,
+        isLoading: false,
+        cartItems: isCartItemPresentInCart(action.payload, state.cartItems)
+          ? state.cartItems.map((item) =>
+              item.id === action.payload.id ? action.payload : item
+            )
+          : [...state.cartItems, action.payload],
+      };
+
     case actionTypes.UPDATE_CARTITEM_QUANTITY_SUCCESS:
       return {
         ...state,
@@ -54,8 +65,7 @@ export const cartReducer = (state = initialStates, action) => {
       return {
         ...state,
         isLoading: false,
-        cart: action.payload,
-        cartItems: state.cartItems.filter((item) => item !== action.payload),
+        cartItems: state.cartItems.filter((item) => item.id !== action.payload),
         error: null,
       };
 

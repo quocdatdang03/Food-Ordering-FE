@@ -4,6 +4,8 @@ import AccordionSummary from "@mui/material/AccordionSummary";
 import AccordionDetails from "@mui/material/AccordionDetails";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import { Button, Checkbox, FormControlLabel, FormGroup } from "@mui/material";
+import { useDispatch } from "react-redux";
+import { addItemToCartAction } from "../../../Redux/Cart/Action";
 
 const fakeDatas = [
   {
@@ -25,12 +27,9 @@ const fakeDatas = [
 ];
 
 const MenuCards = ({ item }) => {
-  console.log(item);
-
   const categorizeIngredients = () => {
     return item.ingredients.reduce((acc, item) => {
       const { category } = item;
-      console.log(category.name);
 
       if (!acc[category.name]) {
         acc[category.name] = [];
@@ -40,6 +39,30 @@ const MenuCards = ({ item }) => {
 
       return acc;
     }, {});
+  };
+
+  const dispatch = useDispatch();
+  const jwtToken = localStorage.getItem("jwtToken");
+  const [selectedIngredients, setSelectedIngredients] = useState([]);
+
+  const handleAddTocart = () => {
+    const requestData = {
+      foodId: item.id,
+      quantity: 1,
+      ingredients: selectedIngredients,
+    };
+
+    dispatch(addItemToCartAction(jwtToken, requestData));
+  };
+
+  const handleSelectIngredient = (ingredientName) => {
+    if (selectedIngredients.includes(ingredientName)) {
+      setSelectedIngredients(
+        selectedIngredients.filter((item) => item !== ingredientName)
+      );
+    } else {
+      setSelectedIngredients([...selectedIngredients, ingredientName]);
+    }
   };
 
   return (
@@ -80,6 +103,7 @@ const MenuCards = ({ item }) => {
                             key={item.id}
                             control={<Checkbox />}
                             label={item.name}
+                            onChange={() => handleSelectIngredient(item.name)}
                           />
                         );
                       })}
@@ -88,7 +112,9 @@ const MenuCards = ({ item }) => {
                 );
               })}
             </div>
-            <Button variant="contained">Add to cart</Button>
+            <Button variant="contained" onClick={handleAddTocart}>
+              Add to cart
+            </Button>
           </form>
         </AccordionDetails>
       </Accordion>

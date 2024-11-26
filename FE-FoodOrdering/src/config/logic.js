@@ -4,3 +4,11 @@ export const isPresentInFavorites = (favorites, restaurant) => {
   }
   return false;
 };
+
+export const isCartItemPresentInCart = (cartItem, cartItems) => {
+  for (let item of cartItems) {
+    if (item.id === cartItem.id) return true;
+  }
+
+  return false;
+};

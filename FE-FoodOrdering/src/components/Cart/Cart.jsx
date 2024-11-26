@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import CartItem from "./CartItem";
 import { Field, useFormik } from "formik";
 import {
@@ -15,6 +15,8 @@ import {
 import HomeIcon from "@mui/icons-material/Home";
 import AddLocationAltIcon from "@mui/icons-material/AddLocationAlt";
 import { newAddressFormValidation } from "./newAddressFormValidation";
+import { useDispatch, useSelector } from "react-redux";
+import { getAllCartItemsAction, getCartAction } from "../../Redux/Cart/Action";
 
 const style = {
   position: "absolute",
@@ -50,11 +52,28 @@ const Cart = () => {
     },
   });
 
+  // get all cart items:
+  const dispatch = useDispatch();
+  const jwtToken = localStorage.getItem("jwtToken");
+  const { cartReducer } = useSelector((store) => store);
+
+  useEffect(() => {
+    dispatch(getCartAction(jwtToken));
+    dispatch(getAllCartItemsAction(jwtToken));
+  }, []);
+
+  useEffect(() => {
+    dispatch(getCartAction(jwtToken));
+  }, [cartReducer.cartItems]);
+
+  console.log(cartReducer.cart);
+
   return (
     <div className="grid grid-cols-12 gap-5">
       <div className="col-span-4 lg:min-h-[100vh] pt-10 space-y-9 p-5">
-        <CartItem />
-        <CartItem />
+        {cartReducer.cartItems.map((item) => {
+          return <CartItem key={item.id} item={item} />;
+        })}
 
         <Divider />
 
@@ -64,7 +83,7 @@ const Cart = () => {
             <div className="flex items-center justify-between">
               <p>Item Total</p>
               <p>
-                $<span>199</span>
+                $<span>{cartReducer.cart?.totalPrice}</span>
               </p>
             </div>
             <div className="flex items-center justify-between">

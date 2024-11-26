@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import SearchIcon from "@mui/icons-material/Search";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
@@ -8,7 +8,7 @@ import { useSelector } from "react-redux";
 
 const Navbar = () => {
   const navigate = useNavigate();
-  const { authReducer } = useSelector((store) => store);
+  const { authReducer, cartReducer } = useSelector((store) => store);
 
   const handleNavigateToProfile = () => {
     if (authReducer.user.role === "ROLE_CUSTOMER") {
@@ -17,6 +17,8 @@ const Navbar = () => {
       navigate("/admin/restaurants");
     }
   };
+
+  console.log(cartReducer.cartItems);
 
   return (
     <div className="px-5 z-50 py-3 bg-[#e91e63] lg:px-20 flex justify-between">
@@ -55,8 +57,11 @@ const Navbar = () => {
         </div>
         <div>
           <IconButton>
-            <Badge color="secondary" badgeContent={10}>
-              <ShoppingCartIcon />
+            <Badge
+              color="secondary"
+              badgeContent={cartReducer.cartItems.length}
+            >
+              <ShoppingCartIcon onClick={() => navigate("/cart")} />
             </Badge>
           </IconButton>
         </div>

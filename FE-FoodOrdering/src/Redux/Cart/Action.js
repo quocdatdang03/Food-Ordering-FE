@@ -3,7 +3,6 @@ import * as actionTypes from "./ActionType";
 
 export const getCartAction = (jwtToken) => async (dispatch) => {
   dispatch({ type: actionTypes.GET_CART_REQUEST });
-
   try {
     const response = await axiosAPI.get("/cart", {
       headers: {

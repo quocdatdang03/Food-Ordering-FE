@@ -12,15 +12,20 @@ import Profile from "./components/Profile/Profile";
 import Auth from "./components/Auth/Auth";
 import { useDispatch, useSelector } from "react-redux";
 import { getUserAction } from "./Redux/Auth/Action";
+import { getAllCartItemsAction, getCartAction } from "./Redux/Cart/Action";
 
 function App() {
   const dispatch = useDispatch();
   const jwtToken = localStorage.getItem("jwtToken");
-  const { authReducer } = useSelector((store) => store);
+  const { authReducer, cartReducer } = useSelector((store) => store);
 
   useEffect(() => {
-    if (authReducer.jwtToken || jwtToken)
+    if (authReducer.jwtToken || jwtToken) {
       dispatch(getUserAction(authReducer.jwtToken || jwtToken));
+
+      // get all cart items
+      dispatch(getAllCartItemsAction(authReducer.jwtToken || jwtToken));
+    }
   }, [authReducer.jwtToken]);
 
   return (
