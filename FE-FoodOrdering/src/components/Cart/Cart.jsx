@@ -17,6 +17,7 @@ import AddLocationAltIcon from "@mui/icons-material/AddLocationAlt";
 import { newAddressFormValidation } from "./newAddressFormValidation";
 import { useDispatch, useSelector } from "react-redux";
 import { getAllCartItemsAction, getCartAction } from "../../Redux/Cart/Action";
+import { createOrderAction } from "../../Redux/order/Action";
 
 const style = {
   position: "absolute",
@@ -43,15 +44,6 @@ const Cart = () => {
 
   const handleCloseModalAddNewAddress = () => setOpen(false);
 
-  // Handling Form :
-  const formik = useFormik({
-    initialValues: initialValues,
-    validationSchema: newAddressFormValidation,
-    onSubmit: (values) => {
-      console.log(values);
-    },
-  });
-
   // get all cart items:
   const dispatch = useDispatch();
   const jwtToken = localStorage.getItem("jwtToken");
@@ -66,7 +58,21 @@ const Cart = () => {
     dispatch(getCartAction(jwtToken));
   }, [cartReducer.cartItems]);
 
-  console.log(cartReducer.cart);
+  // console.log(cartReducer.cartItems);
+
+  // Handling Form Submit Order (create order) :
+  const formik = useFormik({
+    initialValues: initialValues,
+    validationSchema: newAddressFormValidation,
+    onSubmit: (addressData) => {
+      const requestData = {
+        restaurantId: cartReducer.cartItems[0]?.food.restaurantId,
+        deliveryAddress: addressData,
+      };
+
+      dispatch(createOrderAction(jwtToken, requestData));
+    },
+  });
 
   return (
     <div className="grid grid-cols-12 gap-5">
@@ -270,7 +276,7 @@ const Cart = () => {
                 sx={{ marginTop: 3 }}
                 type="submit"
               >
-                Add new address
+                Delivery here
               </Button>
             </form>
           </Box>

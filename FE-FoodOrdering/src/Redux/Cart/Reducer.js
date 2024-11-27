@@ -1,4 +1,5 @@
 import { isCartItemPresentInCart } from "../../config/logic";
+import { LOGOUT } from "../Auth/ActionType";
 import * as actionTypes from "./ActionType";
 
 const initialStates = {
@@ -76,6 +77,14 @@ export const cartReducer = (state = initialStates, action) => {
         cart: action.payload,
         cartItems: [],
         error: null,
+      };
+
+    case LOGOUT:
+      return {
+        ...state,
+        isLoading: false,
+        cart: null,
+        cartItems: [],
       };
 
     // CASE FAILURE :

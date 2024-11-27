@@ -14,7 +14,8 @@ const Home = () => {
     // get all restaurants :
     dispatch(getAllRestaurantAction(jwtToken));
   }, []);
-  const fakeData = [1, 1, 1, 1, 1, 1, 1, 1];
+
+  console.log(restaurantReducer.restaurants);
 
   return (
     <div>

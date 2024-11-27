@@ -15,6 +15,8 @@ export const createOrderAction =
         type: actionTypes.CREATE_ORDER_SUCCESS,
         payload: response.data,
       });
+
+      console.log("CREATE ORDER SUCCESS: " + response.data);
     } catch (error) {
       dispatch({ type: actionTypes.CREATE_ORDER_FAILURE, payload: error });
       console.log(error);
