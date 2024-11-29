@@ -11,6 +11,10 @@ export const createOrderAction =
         },
       });
 
+      if (response.data.paymentUrl) {
+        window.location.href = response.data.paymentUrl;
+      }
+
       dispatch({
         type: actionTypes.CREATE_ORDER_SUCCESS,
         payload: response.data,

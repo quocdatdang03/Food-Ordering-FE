@@ -18,6 +18,7 @@ import { newAddressFormValidation } from "./newAddressFormValidation";
 import { useDispatch, useSelector } from "react-redux";
 import { getAllCartItemsAction, getCartAction } from "../../Redux/Cart/Action";
 import { createOrderAction } from "../../Redux/order/Action";
+import { getUserAction } from "../../Redux/Auth/Action";
 
 const style = {
   position: "absolute",
@@ -47,7 +48,7 @@ const Cart = () => {
   // get all cart items:
   const dispatch = useDispatch();
   const jwtToken = localStorage.getItem("jwtToken");
-  const { cartReducer } = useSelector((store) => store);
+  const { cartReducer, authReducer } = useSelector((store) => store);
 
   useEffect(() => {
     dispatch(getCartAction(jwtToken));
@@ -114,83 +115,32 @@ const Cart = () => {
           </div>
         </div>
       </div>
-      <div className="col-span-8 py-10 px-14 grid grid-cols-3 gap-5">
-        <div>
-          <Card>
-            <div className="flex gap-3 p-5">
-              <HomeIcon />
-              <div>
-                <h2 className="text-lg font-semibold mb-3">Home</h2>
-                <p className="text-gray-400 text-justify text-sm">
-                  Lorem ipsum dolor sit amet consectetur adipisicing elit. Iusto
-                  sint officiis fuga illum voluptate illo? Quas optio suscipit
-                  ratione sequi corporis rem quia debitis. Sapiente culpa saepe
-                  adipisci laboriosam et.
-                </p>
-                <Button sx={{ marginTop: 2 }} fullWidth variant="outlined">
-                  Select
-                </Button>
-              </div>
+      <div className="col-span-8 py-10 px-14 grid grid-cols-3 gap-x-5">
+        {authReducer.user?.addresses.map((item) => {
+          return (
+            <div key={item.id}>
+              <Card>
+                <div className="flex gap-3 p-5">
+                  <HomeIcon />
+                  <div>
+                    <h2 className="text-lg font-semibold mb-3">{item.city}</h2>
+                    <p>Address</p>
+                    <p className="text-gray-400 text-justify text-sm">
+                      {item.state}
+                    </p>
+                    <p className="text-gray-400 text-justify text-sm">
+                      {item.streetAddress}
+                    </p>
+                    <Button sx={{ marginTop: 2 }} fullWidth variant="outlined">
+                      Select
+                    </Button>
+                  </div>
+                </div>
+              </Card>
             </div>
-          </Card>
-        </div>
-        <div>
-          <Card>
-            <div className="flex gap-3 p-5">
-              <HomeIcon />
-              <div>
-                <h2 className="text-lg font-semibold mb-3">Home</h2>
-                <p className="text-gray-400 text-justify text-sm">
-                  Lorem ipsum dolor sit amet consectetur adipisicing elit. Iusto
-                  sint officiis fuga illum voluptate illo? Quas optio suscipit
-                  ratione sequi corporis rem quia debitis. Sapiente culpa saepe
-                  adipisci laboriosam et.
-                </p>
-                <Button sx={{ marginTop: 2 }} fullWidth variant="outlined">
-                  Select
-                </Button>
-              </div>
-            </div>
-          </Card>
-        </div>
-        <div>
-          <Card>
-            <div className="flex gap-3 p-5">
-              <HomeIcon />
-              <div>
-                <h2 className="text-lg font-semibold mb-3">Home</h2>
-                <p className="text-gray-400 text-justify text-sm">
-                  Lorem ipsum dolor sit amet consectetur adipisicing elit. Iusto
-                  sint officiis fuga illum voluptate illo? Quas optio suscipit
-                  ratione sequi corporis rem quia debitis. Sapiente culpa saepe
-                  adipisci laboriosam et.
-                </p>
-                <Button sx={{ marginTop: 2 }} fullWidth variant="outlined">
-                  Select
-                </Button>
-              </div>
-            </div>
-          </Card>
-        </div>
-        <div>
-          <Card>
-            <div className="flex gap-3 p-5">
-              <HomeIcon />
-              <div>
-                <h2 className="text-lg font-semibold mb-3">Home</h2>
-                <p className="text-gray-400 text-justify text-sm">
-                  Lorem ipsum dolor sit amet consectetur adipisicing elit. Iusto
-                  sint officiis fuga illum voluptate illo? Quas optio suscipit
-                  ratione sequi corporis rem quia debitis. Sapiente culpa saepe
-                  adipisci laboriosam et.
-                </p>
-                <Button sx={{ marginTop: 2 }} fullWidth variant="outlined">
-                  Select
-                </Button>
-              </div>
-            </div>
-          </Card>
-        </div>
+          );
+        })}
+
         <div>
           <Card>
             <div className="flex gap-3 p-5">

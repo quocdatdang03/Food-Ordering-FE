@@ -13,6 +13,7 @@ import Auth from "./components/Auth/Auth";
 import { useDispatch, useSelector } from "react-redux";
 import { getUserAction } from "./Redux/Auth/Action";
 import { getAllCartItemsAction, getCartAction } from "./Redux/Cart/Action";
+import PaymentSuccess from "./components/Payment/PaymentSuccess";
 
 function App() {
   const dispatch = useDispatch();
@@ -43,6 +44,7 @@ function App() {
             <Route path="/cart" element={<Cart />} />
             <Route path="/my-profile/*" element={<Profile />} />
             <Route path="/account/:register" element={<Auth />} />
+            <Route path="/payment/success/:id" element={<PaymentSuccess />} />
           </Routes>
         </BrowserRouter>
       </ThemeProvider>
