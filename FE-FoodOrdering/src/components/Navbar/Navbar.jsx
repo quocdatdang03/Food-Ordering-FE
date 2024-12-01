@@ -33,7 +33,7 @@ const Navbar = () => {
       </div>
       <div className="flex items-center space-x-5 lg:space-x-10">
         <div>
-          <IconButton>
+          <IconButton onClick={() => navigate("/search")}>
             <SearchIcon style={{ fontSize: "18px;" }} />
           </IconButton>
         </div>

@@ -55,6 +55,8 @@ export const getRestaurantByIdAction =
       });
 
       dispatch({ type: GET_RESTAURANT_BY_ID_SUCCESS, payload: response.data });
+
+      return response.data;
     } catch (error) {
       console.log(error);
       dispatch({ type: GET_RESTAURANT_BY_ID_FAILURE, payload: error });

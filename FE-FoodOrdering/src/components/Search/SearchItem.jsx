@@ -1,13 +1,19 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Accordion from "@mui/material/Accordion";
 import AccordionSummary from "@mui/material/AccordionSummary";
 import AccordionDetails from "@mui/material/AccordionDetails";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import { Button, Checkbox, FormControlLabel, FormGroup } from "@mui/material";
-import { useDispatch } from "react-redux";
-import { addItemToCartAction } from "../../../Redux/Cart/Action";
+import { useDispatch, useSelector } from "react-redux";
+import { addItemToCartAction } from "../../Redux/Cart/Action";
+import ArrowRightAltIcon from "@mui/icons-material/ArrowRightAlt";
+import { useNavigate } from "react-router-dom";
+import { getRestaurantByIdAction } from "../../Redux/Restaurant/Action";
 
-const MenuCards = ({ item }) => {
+const SearchItem = ({ item }) => {
+  const navigate = useNavigate();
+  const { restaurantReducer } = useSelector((store) => store);
+
   const categorizeIngredients = () => {
     return item.ingredients.reduce((acc, item) => {
       const { category } = item;
@@ -45,6 +51,29 @@ const MenuCards = ({ item }) => {
       setSelectedIngredients([...selectedIngredients, ingredientName]);
     }
   };
+
+  const [restaurant, setRestaurant] = useState(null);
+
+  const handleNavigateToRestaurant = () => {
+    navigate(
+      `/restaurant/${restaurant.address?.city}/${restaurant?.name}/${restaurant?.id}`
+    );
+  };
+
+  useEffect(() => {
+    const getRestaurantById = async () => {
+      try {
+        const restaurantData = await dispatch(
+          getRestaurantByIdAction(jwtToken, item.restaurantId)
+        );
+        setRestaurant(restaurantData); // Lưu vào state cục bộ
+      } catch (error) {
+        console.error("Error fetching restaurant:", error);
+      }
+    };
+
+    getRestaurantById();
+  }, [item.restaurantId]);
 
   return (
     <div className="w-full">
@@ -93,9 +122,17 @@ const MenuCards = ({ item }) => {
                 );
               })}
             </div>
-            <Button variant="contained" onClick={handleAddTocart}>
-              Add to cart
-            </Button>
+            <div className="space-x-3">
+              <Button variant="contained" onClick={handleAddTocart}>
+                Add to cart
+              </Button>
+              <Button variant="text" onClick={handleNavigateToRestaurant}>
+                <span className="pr-1 underline normal-case text-lg">
+                  <ArrowRightAltIcon />
+                  Go To {restaurant?.name}
+                </span>
+              </Button>
+            </div>
           </form>
         </AccordionDetails>
       </Accordion>
@@ -103,4 +140,4 @@ const MenuCards = ({ item }) => {
   );
 };
 
-export default MenuCards;
+export default SearchItem;
