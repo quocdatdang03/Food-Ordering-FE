@@ -1,11 +1,17 @@
-import { Alert, Button, TextField } from "@mui/material";
+import React, { useEffect, useState } from "react";
+import {
+  Alert,
+  Button,
+  TextField,
+  IconButton,
+  InputAdornment,
+} from "@mui/material";
+import { Visibility, VisibilityOff } from "@mui/icons-material";
 import { useFormik } from "formik";
-import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { clearAuthError, loginUserAction } from "../../Redux/Auth/Action";
 import { loginFormValidation } from "./validation/loginFormValidation";
-import { CLEAR_AUTH_ERROR } from "../../Redux/Auth/ActionType";
 
 const initialValues = {
   email: "",
@@ -16,6 +22,12 @@ const LoginForm = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { authReducer } = useSelector((store) => store);
+
+  // State to toggle password visibility
+  const [showPassword, setShowPassword] = useState(false);
+
+  const handleClickShowPassword = () => setShowPassword(!showPassword);
+  const handleMouseDownPassword = (event) => event.preventDefault();
 
   // Handling Form :
   const formik = useFormik({
@@ -31,7 +43,6 @@ const LoginForm = () => {
   });
 
   useEffect(() => {
-    // clean-up-function: will be called when this component unmount
     return () => {
       if (authReducer.error) {
         dispatch(clearAuthError());
@@ -84,13 +95,26 @@ const LoginForm = () => {
               variant="outlined"
               fullWidth
               sx={{ marginBottom: 2 }}
-              type="password"
+              type={showPassword ? "text" : "password"} // Toggle password visibility
               name="password"
               onChange={formik.handleChange}
               onBlur={formik.handleBlur}
               value={formik.values.password}
               error={formik.errors.password}
               helperText={formik.errors.password && formik.errors.password}
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <IconButton
+                      onClick={handleClickShowPassword}
+                      onMouseDown={handleMouseDownPassword}
+                      edge="end"
+                    >
+                      {showPassword ? <VisibilityOff /> : <Visibility />}
+                    </IconButton>
+                  </InputAdornment>
+                ),
+              }}
             />
           </div>
           <Button
