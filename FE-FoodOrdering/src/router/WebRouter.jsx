@@ -7,10 +7,12 @@ import Profile from "../components/Profile/Profile";
 import Auth from "../components/Auth/Auth";
 import PaymentSuccess from "../components/Payment/PaymentSuccess";
 import Search from "../components/Search/Search";
+import Navbar from "../components/Navbar/Navbar";
 
 const WebRouter = () => {
   return (
     <>
+      <Navbar />
       <Routes>
         <Route path="/" element={<Home />} />
         <Route

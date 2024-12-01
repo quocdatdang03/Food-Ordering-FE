@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import Navbar from "./components/Navbar/Navbar";
 import { ThemeProvider } from "@emotion/react";
 import { darkTheme } from "./Theme/DarkTheme";
 import { CssBaseline } from "@mui/material";
@@ -29,7 +28,6 @@ function App() {
       <ThemeProvider theme={darkTheme}>
         <CssBaseline />
         <BrowserRouter>
-          <Navbar />
           <Routers />
         </BrowserRouter>
       </ThemeProvider>
