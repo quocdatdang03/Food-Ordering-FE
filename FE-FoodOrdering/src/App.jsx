@@ -3,23 +3,17 @@ import Navbar from "./components/Navbar/Navbar";
 import { ThemeProvider } from "@emotion/react";
 import { darkTheme } from "./Theme/DarkTheme";
 import { CssBaseline } from "@mui/material";
-import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { BrowserRouter } from "react-router-dom";
 
-import Home from "./components/Home/Home";
-import RestaurantDetail from "./components/Restaurant/RestaurantDetail";
-import Cart from "./components/Cart/Cart";
-import Profile from "./components/Profile/Profile";
-import Auth from "./components/Auth/Auth";
 import { useDispatch, useSelector } from "react-redux";
 import { getUserAction } from "./Redux/Auth/Action";
-import { getAllCartItemsAction, getCartAction } from "./Redux/Cart/Action";
-import PaymentSuccess from "./components/Payment/PaymentSuccess";
-import Search from "./components/Search/Search";
+import { getAllCartItemsAction } from "./Redux/Cart/Action";
+import Routers from "./router/Routers";
 
 function App() {
   const dispatch = useDispatch();
   const jwtToken = localStorage.getItem("jwtToken");
-  const { authReducer, cartReducer } = useSelector((store) => store);
+  const { authReducer } = useSelector((store) => store);
 
   useEffect(() => {
     if (authReducer.jwtToken || jwtToken) {
@@ -36,18 +30,7 @@ function App() {
         <CssBaseline />
         <BrowserRouter>
           <Navbar />
-          <Routes>
-            <Route path="/" element={<Home />} />
-            <Route
-              path="/restaurant/:city/:restaurantName/:id"
-              element={<RestaurantDetail />}
-            />
-            <Route path="/cart" element={<Cart />} />
-            <Route path="/my-profile/*" element={<Profile />} />
-            <Route path="/account/:register" element={<Auth />} />
-            <Route path="/payment/success/:id" element={<PaymentSuccess />} />
-            <Route path="/search" element={<Search />} />
-          </Routes>
+          <Routers />
         </BrowserRouter>
       </ThemeProvider>
     </>
