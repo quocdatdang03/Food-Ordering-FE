@@ -8,6 +8,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { getUserAction } from "./Redux/Auth/Action";
 import { getAllCartItemsAction } from "./Redux/Cart/Action";
 import Routers from "./router/Routers";
+import { getRestaurantByOwnerIdAction } from "./Redux/Restaurant/Action";
 
 function App() {
   const dispatch = useDispatch();
@@ -22,6 +23,10 @@ function App() {
       dispatch(getAllCartItemsAction(authReducer.jwtToken || jwtToken));
     }
   }, [authReducer.jwtToken]);
+
+  useEffect(() => {
+    dispatch(getRestaurantByOwnerIdAction(authReducer.jwtToken || jwtToken));
+  }, [authReducer.user]);
 
   return (
     <>

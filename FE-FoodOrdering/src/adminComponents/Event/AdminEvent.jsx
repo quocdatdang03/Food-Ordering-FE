@@ -218,7 +218,6 @@ const AdminEvent = () => {
                   type="text"
                   name="name"
                   onChange={formik.handleChange}
-                  onBlur={formik.handleBlur}
                   value={formik.values.name}
                   error={formik.errors.name && Boolean(formik.errors.name)}
                   helperText={formik.errors.name && formik.errors.name}
@@ -232,7 +231,6 @@ const AdminEvent = () => {
                   type="text"
                   name="location"
                   onChange={formik.handleChange}
-                  onBlur={formik.handleBlur}
                   value={formik.values.location}
                   error={
                     formik.errors.location && Boolean(formik.errors.location)

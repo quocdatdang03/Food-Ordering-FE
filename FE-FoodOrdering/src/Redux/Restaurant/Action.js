@@ -83,26 +83,25 @@ export const getRestaurantByOwnerIdAction = (jwtToken) => async (dispatch) => {
   }
 };
 
-export const createRestaurantAction = (requestData) => async (dispatch) => {
-  dispatch({ type: CREATE_RESTAURANT_REQUEST });
+export const createRestaurantAction =
+  (jwtToken, requestData, navigate) => async (dispatch) => {
+    dispatch({ type: CREATE_RESTAURANT_REQUEST });
 
-  try {
-    const response = await axiosAPI.post(
-      "/admin/restaurants",
-      requestData.restaurantData,
-      {
+    try {
+      const response = await axiosAPI.post("/admin/restaurants", requestData, {
         headers: {
-          Authorization: "Bearer " + requestData.jwtToken,
+          Authorization: "Bearer " + jwtToken,
         },
-      }
-    );
+      });
 
-    dispatch({ type: CREATE_RESTAURANT_SUCCESS, payload: response.data });
-  } catch (error) {
-    console.log(error);
-    dispatch({ type: CREATE_RESTAURANT_FAILURE, payload: error });
-  }
-};
+      dispatch({ type: CREATE_RESTAURANT_SUCCESS, payload: response.data });
+
+      navigate("/admin/restaurants/details");
+    } catch (error) {
+      console.log(error);
+      dispatch({ type: CREATE_RESTAURANT_FAILURE, payload: error });
+    }
+  };
 
 export const updateRestaurantAction = (requestData) => async (dispatch) => {
   dispatch({ type: UPDATE_RESTAURANT_REQUEST });

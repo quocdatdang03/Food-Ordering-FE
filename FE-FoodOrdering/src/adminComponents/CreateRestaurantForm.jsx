@@ -6,6 +6,9 @@ import CloseIcon from "@mui/icons-material/Close";
 import { useFormik } from "formik";
 import { uploadImageToCloudinary } from "../util/UploadImageToCloudinary";
 import { createRestaurantValidation } from "./validation/createRestaurantValidation";
+import { useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { createRestaurantAction } from "../Redux/Restaurant/Action";
 
 const initialValues = {
   name: "",
@@ -24,6 +27,9 @@ const initialValues = {
 
 const CreateRestaurantForm = () => {
   const [uploadImage, setUploadImage] = useState(false);
+  const jwtToken = localStorage.getItem("jwtToken");
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const handleUploadImage = async (e) => {
     setUploadImage(true);
@@ -71,7 +77,7 @@ const CreateRestaurantForm = () => {
         images: values.images,
       };
 
-      console.log(requestData);
+      dispatch(createRestaurantAction(jwtToken, requestData, navigate));
     },
   });
 

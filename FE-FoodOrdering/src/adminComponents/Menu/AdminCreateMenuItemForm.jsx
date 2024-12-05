@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import { uploadImageToCloudinary } from "../../util/UploadImageToCloudinary";
-import { createRestaurantValidation } from "../validation/createRestaurantValidation";
 import { useFormik } from "formik";
 
 import AddPhotoAlternateIcon from "@mui/icons-material/AddPhotoAlternate";
