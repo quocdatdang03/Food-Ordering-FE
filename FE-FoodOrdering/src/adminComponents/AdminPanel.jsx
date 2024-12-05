@@ -21,6 +21,7 @@ import AdminCategory from "./Category/AdminCategory";
 import AdminIngredient from "./Ingredient/AdminIngredient";
 import AdminEvent from "./Event/AdminEvent";
 import AdminDetail from "./Detail/AdminDetail";
+import { AdminCreateMenuItemForm } from "./Menu/AdminCreateMenuItemForm";
 
 const drawerWidth = 350;
 
@@ -130,6 +131,7 @@ const AdminPanel = () => {
           <Route path="" element={<AdminDashBoard />} />
           <Route path="/orders" element={<AdminOrder />} />
           <Route path="/menus" element={<AdminMenu />} />
+          <Route path="/menus/add-menu" element={<AdminCreateMenuItemForm />} />
           <Route path="/categories" element={<AdminCategory />} />
           <Route path="/ingredients" element={<AdminIngredient />} />
           <Route path="/events" element={<AdminEvent />} />

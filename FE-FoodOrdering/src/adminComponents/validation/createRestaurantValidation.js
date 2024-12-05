@@ -20,4 +20,8 @@ export const createRestaurantValidation = Yup.object({
     .required("Phone number is required"),
   facebook: Yup.string().required("Facebook is required."),
   instagram: Yup.string().required("Instagram is required."),
+  images: Yup.array()
+    .of(Yup.string().url("Each image must be a valid URL."))
+    .required("At least one image is required.")
+    .min(1, "You must provide at least one image."),
 });

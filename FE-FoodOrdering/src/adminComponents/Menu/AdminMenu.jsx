@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import AdminMenuTable from "./AdminMenuTable";
 
 import EditIcon from "@mui/icons-material/Edit";
+import { useNavigate } from "react-router-dom";
 
 const orderStatusDatas = [
   {
@@ -25,6 +26,7 @@ const orderStatusDatas = [
 
 const AdminMenu = () => {
   const [orderStatus, setOrderStatus] = useState("ALL");
+  const navigate = useNavigate();
 
   const handleChangeOrderStatus = (e) => {
     setOrderStatus(e.target.value);
@@ -36,7 +38,7 @@ const AdminMenu = () => {
         <CardHeader
           title="All Menu Items"
           action={
-            <IconButton>
+            <IconButton onClick={() => navigate("add-menu")}>
               <EditIcon />
             </IconButton>
           }

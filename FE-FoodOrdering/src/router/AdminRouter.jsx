@@ -9,7 +9,7 @@ const AdminRouter = () => {
       <Routes>
         <Route
           path="/*"
-          element={true ? <CreateRestaurantForm /> : <AdminPanel />}
+          element={false ? <CreateRestaurantForm /> : <AdminPanel />}
         />
       </Routes>
     </>

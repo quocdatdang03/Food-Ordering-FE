@@ -105,6 +105,12 @@ const CreateRestaurantForm = () => {
                     </div>
                   )}
                 </label>
+
+                {formik.errors.images && (
+                  <div className="text-red-500 text-sm mt-1">
+                    {formik.errors.images}
+                  </div>
+                )}
               </div>
 
               <div className="flex items-center flex-wrap gap-3">
