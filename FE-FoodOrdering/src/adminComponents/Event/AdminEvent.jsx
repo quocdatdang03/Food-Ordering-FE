@@ -23,6 +23,7 @@ import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DateTimePicker } from "@mui/x-date-pickers/DateTimePicker";
 import dayjs from "dayjs";
 import { date } from "yup";
+import { createEventFormValidation } from "../validation/createEventFormValidation";
 
 const style = {
   position: "absolute",
@@ -82,7 +83,7 @@ const AdminEvent = () => {
   // Handling Form Submit Order (create order) :
   const formik = useFormik({
     initialValues: initialValues,
-    // validationSchema: createCategoryFormValidation,
+    validationSchema: createEventFormValidation,
     onSubmit: (values) => {
       const formattedValues = {
         ...values,
@@ -240,30 +241,44 @@ const AdminEvent = () => {
                 />
               </div>
               <div className="grid md:grid-cols-2 gap-3">
-                <LocalizationProvider dateAdapter={AdapterDayjs}>
-                  <DemoContainer components={["DateTimePicker"]}>
-                    <DateTimePicker
-                      label="Start Date and Time"
-                      value={formik.values.startedDate}
-                      onChange={(newValue) =>
-                        formik.setFieldValue("startedDate", newValue)
-                      }
-                      name="startedDate"
-                    />
-                  </DemoContainer>
-                </LocalizationProvider>
-                <LocalizationProvider dateAdapter={AdapterDayjs}>
-                  <DemoContainer components={["DateTimePicker"]}>
-                    <DateTimePicker
-                      label="End Date and Time"
-                      value={formik.values.endsDate}
-                      onChange={(newValue) =>
-                        formik.setFieldValue("endsDate", newValue)
-                      }
-                      name="endsDate"
-                    />
-                  </DemoContainer>
-                </LocalizationProvider>
+                <div>
+                  <LocalizationProvider dateAdapter={AdapterDayjs}>
+                    <DemoContainer components={["DateTimePicker"]}>
+                      <DateTimePicker
+                        label="Start Date and Time"
+                        value={formik.values.startedDate}
+                        onChange={(newValue) =>
+                          formik.setFieldValue("startedDate", newValue)
+                        }
+                        name="startedDate"
+                      />
+                    </DemoContainer>
+                  </LocalizationProvider>
+                  {formik.touched.startedDate && formik.errors.startedDate && (
+                    <p className="text-red-500 text-[12px] mt-[3px] mx-[14px]">
+                      {formik.errors.startedDate}
+                    </p>
+                  )}
+                </div>
+                <div>
+                  <LocalizationProvider dateAdapter={AdapterDayjs}>
+                    <DemoContainer components={["DateTimePicker"]}>
+                      <DateTimePicker
+                        label="End Date and Time"
+                        value={formik.values.endsDate}
+                        onChange={(newValue) =>
+                          formik.setFieldValue("endsDate", newValue)
+                        }
+                        name="endsDate"
+                      />
+                    </DemoContainer>
+                  </LocalizationProvider>
+                  {formik.touched.endsDate && formik.errors.endsDate && (
+                    <p className="text-red-500 text-[12px] mt-[3px] mx-[14px]">
+                      {formik.errors.endsDate}
+                    </p>
+                  )}
+                </div>
               </div>
               <Button
                 variant="contained"
