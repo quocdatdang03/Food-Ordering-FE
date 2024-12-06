@@ -8,11 +8,13 @@ import {
 } from "@mui/material";
 import React, { useState } from "react";
 import AdminOrderTable from "./AdminOrderTable";
+import { useDispatch, useSelector } from "react-redux";
+import { getRestaurantOrdersAction } from "../../Redux/RestaurantOrder/Action";
 
 const orderStatusDatas = [
   {
     name: "All",
-    value: "ALL",
+    value: "",
   },
   {
     name: "Pending",
@@ -29,10 +31,21 @@ const orderStatusDatas = [
 ];
 
 const AdminOrder = () => {
-  const [orderStatus, setOrderStatus] = useState("ALL");
+  const [orderStatus, setOrderStatus] = useState("");
+  const dispatch = useDispatch();
+  const jwtToken = localStorage.getItem("jwtToken");
+  const { restaurantReducer } = useSelector((store) => store);
 
   const handleChangeOrderStatus = (e) => {
     setOrderStatus(e.target.value);
+
+    // show orders by order status:
+    const requestData = {
+      restaurantId: restaurantReducer.ownerRestaurant?.id,
+      orderStatus: e.target.value,
+    };
+
+    dispatch(getRestaurantOrdersAction(jwtToken, requestData));
   };
 
   return (

@@ -30,6 +30,7 @@ import {
 import { getIngredientsOfRestaurantAction } from "../Redux/Ingredient/Action";
 import { getMenuItemsByRestaurantIdAction } from "../Redux/Menu/Action";
 import { AdminEditMenuItemForm } from "./Menu/AdminEditMenuItemForm";
+import { getRestaurantOrdersAction } from "../Redux/RestaurantOrder/Action";
 
 const drawerWidth = 350;
 
@@ -83,7 +84,6 @@ const AdminPanel = () => {
     setOpen(false);
   };
 
-  // Load datas for Category:
   const jwtToken = localStorage.getItem("jwtToken");
   const { restaurantReducer } = useSelector((store) => store);
   const dispatch = useDispatch();
@@ -94,14 +94,22 @@ const AdminPanel = () => {
 
     dispatch(getIngredientsOfRestaurantAction(jwtToken, restaurantId));
 
-    const requestData = {
+    const requestDataOfMenuItems = {
       restaurantId: restaurantId,
       isVegetarian: false,
       isNonVegetarian: false,
       isSeasonal: false,
       foodCategory: "",
     };
-    dispatch(getMenuItemsByRestaurantIdAction(jwtToken, requestData));
+    dispatch(
+      getMenuItemsByRestaurantIdAction(jwtToken, requestDataOfMenuItems)
+    );
+
+    const requestDataOfOrders = {
+      restaurantId: restaurantId,
+      orderStatus: "",
+    };
+    dispatch(getRestaurantOrdersAction(jwtToken, requestDataOfOrders));
   }, []);
 
   return (

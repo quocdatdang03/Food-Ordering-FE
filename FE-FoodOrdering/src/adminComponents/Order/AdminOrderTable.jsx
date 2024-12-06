@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 
 import {
   Button,
@@ -6,6 +6,8 @@ import {
   CardHeader,
   Chip,
   IconButton,
+  Menu,
+  MenuItem,
   Table,
   TableBody,
   TableCell,
@@ -15,51 +17,56 @@ import {
 } from "@mui/material";
 
 import EditIcon from "@mui/icons-material/Edit";
+import { useDispatch, useSelector } from "react-redux";
+import { updateOrderStatusAction } from "../../Redux/RestaurantOrder/Action";
 
-const fakeDatas = [
+const orderStatusDatas = [
   {
-    id: 1,
-    image:
-      "https://images.pexels.com/photos/580612/pexels-photo-580612.jpeg?auto=compress&cs=tinysrgb&w=600",
-    customer: "customer1@gmail.com",
-    price: 19923,
-    name: "Hamburger",
-    ingredients: ["Walnuts", "Cashews"],
-    status: "DELIVERED",
+    title: "Pending",
+    value: "PENDING",
   },
   {
-    id: 2,
-    image:
-      "https://images.pexels.com/photos/1025804/pexels-photo-1025804.jpeg?auto=compress&cs=tinysrgb&w=600",
-    customer: "customer1@gmail.com",
-    price: 12399,
-    name: "Hamburger",
-    ingredients: ["Walnuts", "Cashews", "Peanuts"],
-    status: "COMPLETED",
+    title: "Delivered",
+    value: "DELIVERED",
   },
   {
-    id: 3,
-    image:
-      "https://images.pexels.com/photos/2271107/pexels-photo-2271107.jpeg?auto=compress&cs=tinysrgb&w=600",
-    customer: "customer1@gmail.com",
-    price: 1929,
-    name: "Hamburger",
-    ingredients: ["Walnuts", "Cashews"],
-    status: "PENDING",
+    title: "Completed",
+    value: "COMPLETED",
   },
   {
-    id: 4,
-    image:
-      "https://images.pexels.com/photos/551991/pexels-photo-551991.jpeg?auto=compress&cs=tinysrgb&w=600",
-    customer: "customer1@gmail.com",
-    price: 1599,
-    name: "Hamburger",
-    ingredients: ["Walnuts", "Cashews"],
-    status: "DELIVERED",
+    title: "Out of stock",
+    value: "OUT_OF_STOCK",
   },
 ];
 
 const AdminOrderTable = () => {
+  const { restaurantOrderReducer } = useSelector((store) => store);
+  const dispatch = useDispatch();
+  const jwtToken = localStorage.getItem("jwtToken");
+
+  // Handle Update Order Status:
+  const [anchorEl, setAnchorEl] = useState(null);
+  const [currentOrderId, setCurrentOrderId] = useState(null);
+  const open = Boolean(anchorEl);
+  const handleClick = (event, orderId) => {
+    setAnchorEl(event.currentTarget);
+    setCurrentOrderId(orderId); // Lưu orderId hiện tại
+  };
+  const handleClose = () => {
+    setAnchorEl(null);
+    setCurrentOrderId(null); // Reset lại orderId khi đóng menu
+  };
+
+  const handleUpdateOrderStatus = (orderStatus) => {
+    const requestData = { orderId: currentOrderId, orderStatus };
+
+    dispatch(updateOrderStatusAction(jwtToken, requestData));
+
+    handleClose();
+  };
+
+  console.log(restaurantOrderReducer.orders);
+
   return (
     <Card>
       <CardHeader title="All Orders" />
@@ -70,16 +77,15 @@ const AdminOrderTable = () => {
             <TableRow>
               <TableCell align="center">Id</TableCell>
               <TableCell align="center">Image</TableCell>
-              <TableCell align="center">Customer</TableCell>
-              <TableCell align="center">Price</TableCell>
-              <TableCell align="center">Name</TableCell>
-              <TableCell align="center">Ingredients</TableCell>
+              <TableCell align="center">Customer Email</TableCell>
+              <TableCell align="center">Quantity Of Products</TableCell>
+              <TableCell align="center">Total Price</TableCell>
               <TableCell align="center">Status</TableCell>
-              <TableCell align="center">Update</TableCell>
+              <TableCell align="center">Action</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
-            {fakeDatas.map((item) => (
+            {restaurantOrderReducer.orders?.map((item) => (
               <TableRow
                 key={item.id}
                 sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
@@ -88,35 +94,64 @@ const AdminOrderTable = () => {
                 <TableCell align="center">
                   <img
                     className="h-[3rem] w-[3rem] rounded-full object-cover object-center"
-                    src={item.image}
-                    alt={item.image}
+                    src={item?.orderItems[0].food.images?.[0]}
+                    alt={item?.orderItems[0].food.images?.[0]}
                   />
                 </TableCell>
-                <TableCell align="center">{item.customer}</TableCell>
-                <TableCell align="center">${item.price}</TableCell>
-                <TableCell align="center">{item.name}</TableCell>
-                <TableCell align="center">
-                  <div className="flex justify-center gap-2">
-                    {item.ingredients?.map((item, index) => {
-                      return <Chip key={index} label={item} />;
-                    })}
-                  </div>
-                </TableCell>
+                <TableCell align="center">{item?.customer.email}</TableCell>
+                <TableCell align="center">{item?.totalItem}</TableCell>
+                <TableCell align="center">${item?.totalPrice}</TableCell>
                 <TableCell align="center">
                   <Chip
-                    label={item.status}
+                    label={item?.orderStatus}
                     sx={{ fontWeight: "bold", color: "white" }}
                     color={
-                      item.status === "PENDING"
+                      item?.orderStatus === "PENDING"
                         ? "info"
-                        : item.status === "COMPLETED"
+                        : item?.orderStatus === "COMPLETED"
                         ? "secondary"
+                        : item?.orderStatus === "OUT_OF_STOCK"
+                        ? "error"
                         : "success"
                     }
                   />
                 </TableCell>
                 <TableCell align="center">
-                  <Button variant="text">STATUS</Button>
+                  <div className="flex flex-wrap items-center justify-center gap-3">
+                    <Button
+                      id="basic-button"
+                      onClick={(event) => handleClick(event, item.id)} // Truyền orderId hiện tại
+                      variant="contained"
+                      size="small"
+                    >
+                      UPDATE
+                    </Button>
+                    <Menu
+                      id="basic-menu"
+                      anchorEl={anchorEl}
+                      open={open}
+                      onClose={handleClose}
+                      MenuListProps={{
+                        "aria-labelledby": "basic-button",
+                      }}
+                    >
+                      {orderStatusDatas.map((orderStatusItem) => {
+                        return (
+                          <MenuItem
+                            key={orderStatusItem.title}
+                            onClick={() =>
+                              handleUpdateOrderStatus(orderStatusItem.value)
+                            }
+                          >
+                            {orderStatusItem.title}
+                          </MenuItem>
+                        );
+                      })}
+                    </Menu>
+                    <Button variant="contained" size="small" color="inherit">
+                      SEE DETAILS
+                    </Button>
+                  </div>
                 </TableCell>
               </TableRow>
             ))}
