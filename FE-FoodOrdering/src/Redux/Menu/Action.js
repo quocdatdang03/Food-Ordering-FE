@@ -11,12 +11,18 @@ import {
   GET_MENU_ITEM_BY_RESTAURANT_ID_FAILURE,
   GET_MENU_ITEM_BY_RESTAURANT_ID_REQUEST,
   GET_MENU_ITEM_BY_RESTAURANT_ID_SUCCESS,
+  GET_MENU_ITEM_OF_CURRENT_RESTAURANT_BY_ID_FAILURE,
+  GET_MENU_ITEM_OF_CURRENT_RESTAURANT_BY_ID_REQUEST,
+  GET_MENU_ITEM_OF_CURRENT_RESTAURANT_BY_ID_SUCCESS,
   SEARCH_MENU_ITEM_FAILURE,
   SEARCH_MENU_ITEM_REQUEST,
   SEARCH_MENU_ITEM_SUCCESS,
   UPDATE_MENU_ITEM_AVAILABLE_FAILURE,
   UPDATE_MENU_ITEM_AVAILABLE_REQUEST,
   UPDATE_MENU_ITEM_AVAILABLE_SUCCESS,
+  UPDATE_MENU_ITEM_FAILURE,
+  UPDATE_MENU_ITEM_REQUEST,
+  UPDATE_MENU_ITEM_SUCCESS,
 } from "./ActionType";
 
 export const createMenuItemAction =
@@ -56,8 +62,8 @@ export const getMenuItemsByRestaurantIdAction =
         payload: response.data,
       });
 
-      // console.log("GET ALL FOODS OF RESTAURANT SUCCESS");
-      // console.log(response.data);
+      console.log("GET ALL FOODS OF RESTAURANT SUCCESS");
+      console.log(response.data);
     } catch (error) {
       console.log(error);
       dispatch({
@@ -92,6 +98,7 @@ export const updateMenuItemAvailableAction =
     try {
       const response = await axiosAPI.patch(
         `/admin/foods/${foodId}/available`,
+        {},
         {
           headers: {
             Authorization: "Bearer " + jwtToken,
@@ -130,3 +137,57 @@ export const deleteMenuItemAction = (jwtToken, foodId) => async (dispatch) => {
     dispatch({ type: DELETE_MENU_ITEM_FAILURE, payload: error });
   }
 };
+
+export const getMenuItemOfCurrentRestaurantByIdAction =
+  (jwtToken, foodId) => async (dispatch) => {
+    dispatch({ type: GET_MENU_ITEM_OF_CURRENT_RESTAURANT_BY_ID_REQUEST });
+
+    try {
+      const response = await axiosAPI.get(`/admin/foods/${foodId}`, {
+        headers: {
+          Authorization: "Bearer " + jwtToken,
+        },
+      });
+
+      dispatch({
+        type: GET_MENU_ITEM_OF_CURRENT_RESTAURANT_BY_ID_SUCCESS,
+        payload: response.data,
+      });
+
+      console.log("DELETE MENU ITEM SUCCESS: " + response.data);
+    } catch (error) {
+      console.log(error);
+      dispatch({
+        type: GET_MENU_ITEM_OF_CURRENT_RESTAURANT_BY_ID_FAILURE,
+        payload: error,
+      });
+    }
+  };
+
+export const updateMenuItemByIdAction =
+  (jwtToken, requestData) => async (dispatch) => {
+    dispatch({ type: UPDATE_MENU_ITEM_REQUEST });
+
+    try {
+      const response = await axiosAPI.put(
+        `/admin/foods/${requestData.id}`,
+        requestData,
+        {
+          headers: {
+            Authorization: "Bearer " + jwtToken,
+          },
+        }
+      );
+
+      dispatch({
+        type: UPDATE_MENU_ITEM_SUCCESS,
+        payload: response.data,
+      });
+    } catch (error) {
+      console.log(error);
+      dispatch({
+        type: UPDATE_MENU_ITEM_FAILURE,
+        payload: error,
+      });
+    }
+  };

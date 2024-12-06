@@ -1,8 +1,14 @@
 import { axiosAPI } from "../../config/api";
 import {
+  CREATE_CATEGORY_FAILURE,
+  CREATE_CATEGORY_REQUEST,
+  CREATE_CATEGORY_SUCCESS,
   CREATE_RESTAURANT_FAILURE,
   CREATE_RESTAURANT_REQUEST,
   CREATE_RESTAURANT_SUCCESS,
+  DELETE_CATEGORY_FAILURE,
+  DELETE_CATEGORY_REQUEST,
+  DELETE_CATEGORY_SUCCESS,
   DELETE_RESTAURANT_FAILURE,
   DELETE_RESTAURANT_REQUEST,
   DELETE_RESTAURANT_SUCCESS,
@@ -196,5 +202,44 @@ export const getRestaurantCategoriesAction =
     } catch (error) {
       console.log(error);
       dispatch({ type: GET_RESTAURANTS_CATEGORY_FAILURE });
+    }
+  };
+
+export const createRestaurantCategoryAction =
+  (jwtToken, requestData) => async (dispatch) => {
+    dispatch({ type: CREATE_CATEGORY_REQUEST });
+
+    try {
+      const response = await axiosAPI.post("/admin/categories", requestData, {
+        headers: {
+          Authorization: "Bearer " + jwtToken,
+        },
+      });
+
+      dispatch({ type: CREATE_CATEGORY_SUCCESS, payload: response.data });
+    } catch (error) {
+      console.log(error);
+      dispatch({ type: CREATE_CATEGORY_FAILURE, payload: error });
+    }
+  };
+
+export const deleteRestaurantCategoryAction =
+  (jwtToken, categoryId) => async (dispatch) => {
+    dispatch({ type: DELETE_CATEGORY_REQUEST });
+
+    try {
+      const response = await axiosAPI.delete(
+        `/admin/categories/${categoryId}`,
+        {
+          headers: {
+            Authorization: "Bearer " + jwtToken,
+          },
+        }
+      );
+
+      dispatch({ type: DELETE_CATEGORY_SUCCESS, payload: categoryId });
+    } catch (error) {
+      console.log(error);
+      dispatch({ type: DELETE_CATEGORY_FAILURE, payload: error });
     }
   };

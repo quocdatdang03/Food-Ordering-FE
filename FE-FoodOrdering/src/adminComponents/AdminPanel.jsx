@@ -22,6 +22,14 @@ import AdminIngredient from "./Ingredient/AdminIngredient";
 import AdminEvent from "./Event/AdminEvent";
 import AdminDetail from "./Detail/AdminDetail";
 import { AdminCreateMenuItemForm } from "./Menu/AdminCreateMenuItemForm";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  getRestaurantByIdAction,
+  getRestaurantCategoriesAction,
+} from "../Redux/Restaurant/Action";
+import { getIngredientsOfRestaurantAction } from "../Redux/Ingredient/Action";
+import { getMenuItemsByRestaurantIdAction } from "../Redux/Menu/Action";
+import { AdminEditMenuItemForm } from "./Menu/AdminEditMenuItemForm";
 
 const drawerWidth = 350;
 
@@ -74,6 +82,27 @@ const AdminPanel = () => {
   const handleDrawerClose = () => {
     setOpen(false);
   };
+
+  // Load datas for Category:
+  const jwtToken = localStorage.getItem("jwtToken");
+  const { restaurantReducer } = useSelector((store) => store);
+  const dispatch = useDispatch();
+
+  React.useEffect(() => {
+    const restaurantId = restaurantReducer.ownerRestaurant?.id;
+    dispatch(getRestaurantCategoriesAction(jwtToken, restaurantId));
+
+    dispatch(getIngredientsOfRestaurantAction(jwtToken, restaurantId));
+
+    const requestData = {
+      restaurantId: restaurantId,
+      isVegetarian: false,
+      isNonVegetarian: false,
+      isSeasonal: false,
+      foodCategory: "",
+    };
+    dispatch(getMenuItemsByRestaurantIdAction(jwtToken, requestData));
+  }, []);
 
   return (
     <Box sx={{ display: "flex" }}>
@@ -132,6 +161,10 @@ const AdminPanel = () => {
           <Route path="/orders" element={<AdminOrder />} />
           <Route path="/menus" element={<AdminMenu />} />
           <Route path="/menus/add-menu" element={<AdminCreateMenuItemForm />} />
+          <Route
+            path="/menus/edit-menu/:id"
+            element={<AdminEditMenuItemForm />}
+          />
           <Route path="/categories" element={<AdminCategory />} />
           <Route path="/ingredients" element={<AdminIngredient />} />
           <Route path="/events" element={<AdminEvent />} />

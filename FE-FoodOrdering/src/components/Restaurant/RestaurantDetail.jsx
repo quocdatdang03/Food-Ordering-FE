@@ -70,7 +70,7 @@ const RestaurantDetail = () => {
       isVegetarian: false,
       isNonVegetarian: false,
       isSeasonal: false,
-      foodCateogry: "",
+      foodCategoy: "",
     };
     dispatch(getMenuItemsByRestaurantIdAction(jwtToken, requestFoodData));
   }, []);

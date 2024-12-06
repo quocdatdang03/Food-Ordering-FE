@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import AdminCategoryTable from "./AdminCategoryTable";
 import {
   Backdrop,
@@ -10,10 +10,13 @@ import {
   IconButton,
   Modal,
   TextField,
+  Typography,
 } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
 import { useFormik } from "formik";
 import { createCategoryFormValidation } from "../validation/createCategoryFormValidation";
+import { useDispatch } from "react-redux";
+import { createRestaurantCategoryAction } from "../../Redux/Restaurant/Action";
 
 const style = {
   position: "absolute",
@@ -33,17 +36,26 @@ const initialValues = {
 };
 
 const AdminCategory = () => {
+  const dispatch = useDispatch();
+  const jwtToken = localStorage.getItem("jwtToken");
+
   const [open, setOpen] = useState(false);
   const handleOpenModalAddNewCategory = () => setOpen(true);
 
   const handleCloseModalAddNewCategory = () => setOpen(false);
 
+  const inputNameRef = useRef(null);
+
   // Handling Form Submit Order (create order) :
   const formik = useFormik({
     initialValues: initialValues,
     validationSchema: createCategoryFormValidation,
-    onSubmit: (values) => {
-      console.log(values);
+    onSubmit: (values, { resetForm }) => {
+      dispatch(createRestaurantCategoryAction(jwtToken, values));
+
+      // after submit -> empty and focus input:
+      resetForm();
+      inputNameRef.current.focus();
     },
   });
 
@@ -75,6 +87,9 @@ const AdminCategory = () => {
       >
         <Fade in={open}>
           <Box sx={style}>
+            <Typography variant="h5" component="h1" sx={{ marginBottom: 2 }}>
+              Add New Category
+            </Typography>
             <form className="w-full" onSubmit={formik.handleSubmit}>
               <TextField
                 label="Category Name"
@@ -88,6 +103,7 @@ const AdminCategory = () => {
                 value={formik.values.name}
                 error={formik.errors.name && Boolean(formik.errors.name)}
                 helperText={formik.errors.name && formik.errors.name}
+                inputRef={inputNameRef}
               />
               <Button
                 variant="contained"

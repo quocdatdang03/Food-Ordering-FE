@@ -16,9 +16,8 @@ export const createMenuItemFormValidation = Yup.object({
     .min(1, "You must provide at least one image."),
   isVegetarian: Yup.boolean().required("Vegetarian status is required."),
   isSeasonal: Yup.boolean().required("Seasonal status is required."),
-  category: Yup.string().required("Category is required."),
-  restaurant: Yup.string().required("Restaurant is required."),
+  categoryId: Yup.string().required("Category is required."),
   ingredients: Yup.array()
-    .of(Yup.string().required("Ingredient name is required."))
+    .of(Yup.object().required("Ingredient name is required."))
     .min(1, "You must provide at least one ingredient."),
 });

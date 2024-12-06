@@ -5,6 +5,9 @@ import {
   CREATE_RESTAURANT_FAILURE,
   CREATE_RESTAURANT_REQUEST,
   CREATE_RESTAURANT_SUCCESS,
+  DELETE_CATEGORY_FAILURE,
+  DELETE_CATEGORY_REQUEST,
+  DELETE_CATEGORY_SUCCESS,
   DELETE_RESTAURANT_FAILURE,
   DELETE_RESTAURANT_REQUEST,
   DELETE_RESTAURANT_SUCCESS,
@@ -49,6 +52,7 @@ export const restaurantReducer = (state = initialStates, action) => {
     case UPDATE_RESTAURANT_REQUEST:
     case GET_RESTAURANT_BY_OWNER_ID_REQUEST:
     case CREATE_CATEGORY_REQUEST:
+    case DELETE_CATEGORY_REQUEST:
     case GET_RESTAURANTS_CATEGORY_REQUEST:
     case UPDATE_RESTAURANT_STATUS_REQUEST:
       return {
@@ -117,6 +121,15 @@ export const restaurantReducer = (state = initialStates, action) => {
         categories: action.payload,
       };
 
+    case DELETE_CATEGORY_SUCCESS:
+      return {
+        ...state,
+        isLoading: false,
+        categories: state.categories.filter(
+          (item) => item.id !== action.payload
+        ),
+      };
+
     // FAILURE case:
     case GET_ALL_RESTAURANT_FAILURE:
     case GET_RESTAURANT_BY_ID_FAILURE:
@@ -125,6 +138,7 @@ export const restaurantReducer = (state = initialStates, action) => {
     case UPDATE_RESTAURANT_FAILURE:
     case GET_RESTAURANT_BY_OWNER_ID_FAILURE:
     case CREATE_CATEGORY_FAILURE:
+    case DELETE_CATEGORY_FAILURE:
     case GET_RESTAURANTS_CATEGORY_FAILURE:
     case UPDATE_RESTAURANT_STATUS_FAILURE:
       return {

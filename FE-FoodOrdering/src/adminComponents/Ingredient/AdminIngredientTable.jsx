@@ -19,12 +19,19 @@ import {
   TableHead,
   TableRow,
   TextField,
+  Typography,
 } from "@mui/material";
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 
 import EditIcon from "@mui/icons-material/Edit";
 import { useFormik } from "formik";
 import { createIngredientFormValidation } from "../validation/createIngredientFormValidation";
+import { ingredientReducer } from "../../Redux/Ingredient/Reducer";
+import { useSelector } from "react-redux";
+import {
+  createIngredientAction,
+  updateStockOfIngredientAction,
+} from "../../Redux/Ingredient/Action";
 
 const fakeDatas = [
   {
@@ -79,23 +86,42 @@ const style = {
 
 const initialValues = {
   name: "",
-  category: "",
+  categoryId: "",
 };
 
-const AdminIngredientTable = () => {
+const AdminIngredientTable = ({ jwtToken, dispatch }) => {
+  const { ingredientReducer, restaurantReducer } = useSelector(
+    (store) => store
+  );
+
   const [open, setOpen] = useState(false);
   const handleOpenModalAddNewIngredient = () => setOpen(true);
 
   const handleCloseModalAddNewIngredient = () => setOpen(false);
 
+  const inputNameRef = useRef(null);
+
   // Handling Form Submit Order (create order) :
   const formik = useFormik({
     initialValues: initialValues,
     validationSchema: createIngredientFormValidation,
-    onSubmit: (values) => {
-      console.log(values);
+    onSubmit: (values, { resetForm }) => {
+      const requestData = {
+        ...values,
+        restaurantId: restaurantReducer.ownerRestaurant?.id,
+      };
+
+      dispatch(createIngredientAction(jwtToken, requestData));
+
+      resetForm();
+
+      inputNameRef.current.focus();
     },
   });
+
+  const handleUpdateStockStatus = (ingredientId) => {
+    dispatch(updateStockOfIngredientAction(jwtToken, ingredientId));
+  };
 
   return (
     <div className="lg:col-span-8">
@@ -119,23 +145,30 @@ const AdminIngredientTable = () => {
               </TableRow>
             </TableHead>
             <TableBody>
-              {fakeDatas.map((item) => (
+              {ingredientReducer.ingredients?.map((item) => (
                 <TableRow
                   key={item.id}
                   sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
                 >
                   <TableCell align="center">{item.id}</TableCell>
                   <TableCell align="center">{item.name}</TableCell>
+                  <TableCell align="center">{item.category.name}</TableCell>
                   <TableCell align="center">
-                    {item.ingredientCategory}
-                  </TableCell>
-                  <TableCell align="center">
-                    {item.availability ? (
-                      <Button variant="text" sx={{ color: "#26c665" }}>
+                    {item.inStock ? (
+                      <Button
+                        variant="text"
+                        sx={{ color: "#26c665" }}
+                        onClick={() => handleUpdateStockStatus(item.id)}
+                      >
                         In Stock
                       </Button>
                     ) : (
-                      <Button variant="text">Out of Stock</Button>
+                      <Button
+                        variant="text"
+                        onClick={() => handleUpdateStockStatus(item.id)}
+                      >
+                        Out of Stock
+                      </Button>
                     )}
                   </TableCell>
                 </TableRow>
@@ -159,6 +192,9 @@ const AdminIngredientTable = () => {
       >
         <Fade in={open}>
           <Box sx={style}>
+            <Typography variant="h5" component="h1" sx={{ marginBottom: 2 }}>
+              Add New Ingredient
+            </Typography>
             <form className="w-full" onSubmit={formik.handleSubmit}>
               <TextField
                 label="Ingredient Name"
@@ -168,30 +204,34 @@ const AdminIngredientTable = () => {
                 type="text"
                 name="name"
                 onChange={formik.handleChange}
-                onBlur={formik.handleBlur}
                 value={formik.values.name}
                 error={formik.errors.name && Boolean(formik.errors.name)}
                 helperText={formik.errors.name && formik.errors.name}
+                inputRef={inputNameRef}
               />
               <FormControl
                 fullWidth
                 error={Boolean(
-                  formik.errors.category && formik.touched.category
+                  formik.errors.categoryId && formik.touched.categoryId
                 )}
               >
                 <InputLabel>Choose Category</InputLabel>
                 <Select
-                  value={formik.values.category}
+                  value={formik.values.categoryId}
                   label="Choose Category"
-                  name="category"
+                  name="categoryId"
                   onChange={formik.handleChange}
                 >
-                  <MenuItem value={10}>Ten</MenuItem>
-                  <MenuItem value={20}>Twenty</MenuItem>
-                  <MenuItem value={30}>Thirty</MenuItem>
+                  {ingredientReducer.ingredientCategories?.map((item) => {
+                    return (
+                      <MenuItem key={item.id} value={item.id}>
+                        {item.name}
+                      </MenuItem>
+                    );
+                  })}
                 </Select>
-                {formik.errors.category && (
-                  <FormHelperText>{formik.errors.category}</FormHelperText>
+                {formik.errors.categoryId && (
+                  <FormHelperText>{formik.errors.categoryId}</FormHelperText>
                 )}
               </FormControl>
               <Button

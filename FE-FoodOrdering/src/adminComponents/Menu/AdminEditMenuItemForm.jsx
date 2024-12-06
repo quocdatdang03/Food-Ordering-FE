@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { uploadImageToCloudinary } from "../../util/UploadImageToCloudinary";
 import { useFormik } from "formik";
 
@@ -20,28 +20,30 @@ import {
 import CloseIcon from "@mui/icons-material/Close";
 import { createMenuItemFormValidation } from "../validation/createMenuItemFormValidation";
 import { useDispatch, useSelector } from "react-redux";
-import { createMenuItemAction } from "../../Redux/Menu/Action";
-import { useNavigate } from "react-router-dom";
+import {
+  createMenuItemAction,
+  getMenuItemOfCurrentRestaurantByIdAction,
+  updateMenuItemByIdAction,
+} from "../../Redux/Menu/Action";
+import { useNavigate, useParams } from "react-router-dom";
+import { menuItemReducer } from "../../Redux/Menu/Reducer";
 
-const initialValues = {
-  name: "",
-  description: "",
-  price: "",
-  images: [],
-  isVegetarian: false,
-  isSeasonal: false,
-  categoryId: "",
-  restaurant: "",
-  ingredients: [],
-};
-
-export const AdminCreateMenuItemForm = () => {
-  const { restaurantReducer, ingredientReducer } = useSelector(
+export const AdminEditMenuItemForm = () => {
+  const { restaurantReducer, ingredientReducer, menuItemReducer } = useSelector(
     (store) => store
   );
+
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const jwtToken = localStorage.getItem("jwtToken");
+
+  const { id } = useParams();
+
+  useEffect(() => {
+    dispatch(getMenuItemOfCurrentRestaurantByIdAction(jwtToken, id));
+  }, [id]);
+
+  console.log(menuItemReducer.menuItem);
 
   const [uploadImage, setUploadImage] = useState(false);
 
@@ -69,10 +71,22 @@ export const AdminCreateMenuItemForm = () => {
 
   // Handling Form :
   const formik = useFormik({
-    initialValues: initialValues,
+    enableReinitialize: true, // Cho phép Formik cập nhật initialValues khi prop thay đổi
+    initialValues: {
+      name: menuItemReducer.menuItem?.name || "",
+      description: menuItemReducer.menuItem?.description || "",
+      price: menuItemReducer.menuItem?.price || "",
+      images: menuItemReducer.menuItem?.images || [],
+      isVegetarian: menuItemReducer.menuItem?.vegetarian || false,
+      isSeasonal: menuItemReducer.menuItem?.seasonal || false,
+      categoryId: menuItemReducer.menuItem?.category.id || "",
+      restaurant: menuItemReducer.menuItem?.restaurant || "",
+      ingredients: menuItemReducer.menuItem?.ingredients || [],
+    },
     validationSchema: createMenuItemFormValidation,
     onSubmit: (values) => {
       const requestData = {
+        id: menuItemReducer.menuItem?.id,
         name: values.name,
         description: values.description,
         price: values.price,
@@ -82,16 +96,18 @@ export const AdminCreateMenuItemForm = () => {
         categoryId: values.categoryId,
         restaurantId: restaurantReducer.ownerRestaurant?.id,
         ingredients: values.ingredients,
+        available: menuItemReducer.menuItem?.available,
       };
+
       console.log(requestData);
-      dispatch(createMenuItemAction(jwtToken, requestData));
+      dispatch(updateMenuItemByIdAction(jwtToken, requestData));
       navigate("/admin/restaurants/menus");
     },
   });
 
   return (
     <div className="w-full">
-      <h1 className="text-center text-2xl font-bold mb-5">Add New Menu Item</h1>
+      <h1 className="text-center text-2xl font-bold mb-5">Edit Menu Item</h1>
       <div className="">
         <form className="space-y-5" onSubmit={formik.handleSubmit}>
           <div className="flex items-center gap-5">
@@ -293,7 +309,7 @@ export const AdminCreateMenuItemForm = () => {
 
           <div className="text-center">
             <Button type="submit" variant="contained">
-              Create Menu Item
+              Update menu item
             </Button>
           </div>
         </form>
