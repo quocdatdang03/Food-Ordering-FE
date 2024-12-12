@@ -2,6 +2,7 @@ import * as actionTypes from "./ActionType";
 
 const initialValues = {
   orders: [],
+  orderDetail: null,
   isLoading: false,
   error: null,
   success: null,
@@ -11,6 +12,7 @@ export const restaurantOrderReducer = (state = initialValues, action) => {
   switch (action.type) {
     case actionTypes.GET_RESTAURANT_ORDERS_REQUEST:
     case actionTypes.UPDATE_ORDER_STATUS_REQUEST:
+    case actionTypes.GET_RESTAURANT_ORDER_DETAIL_REQUEST:
       return {
         ...state,
         isLoading: true,
@@ -36,7 +38,15 @@ export const restaurantOrderReducer = (state = initialValues, action) => {
         error: null,
       };
 
+    case actionTypes.GET_RESTAURANT_ORDER_DETAIL_SUCCESS:
+      return {
+        ...state,
+        isLoading: false,
+        orderDetail: action.payload,
+      };
+
     case actionTypes.GET_RESTAURANT_ORDERS_FAILURE:
+    case actionTypes.GET_RESTAURANT_ORDER_DETAIL_FAILURE:
     case actionTypes.UPDATE_ORDER_STATUS_FAILURE:
       return {
         ...state,

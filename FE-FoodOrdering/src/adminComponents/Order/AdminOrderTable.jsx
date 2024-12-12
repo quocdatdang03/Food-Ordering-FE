@@ -19,6 +19,7 @@ import {
 import EditIcon from "@mui/icons-material/Edit";
 import { useDispatch, useSelector } from "react-redux";
 import { updateOrderStatusAction } from "../../Redux/RestaurantOrder/Action";
+import { useNavigate } from "react-router-dom";
 
 const orderStatusDatas = [
   {
@@ -40,8 +41,11 @@ const orderStatusDatas = [
 ];
 
 const AdminOrderTable = () => {
-  const { restaurantOrderReducer } = useSelector((store) => store);
+  const { restaurantOrderReducer, restaurantReducer } = useSelector(
+    (store) => store
+  );
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const jwtToken = localStorage.getItem("jwtToken");
 
   // Handle Update Order Status:
@@ -66,6 +70,10 @@ const AdminOrderTable = () => {
   };
 
   console.log(restaurantOrderReducer.orders);
+
+  const handleNavigateToRestaurantOrderDetail = (orderId) => {
+    navigate("/admin/restaurants/orders/" + orderId);
+  };
 
   return (
     <Card>
@@ -148,7 +156,14 @@ const AdminOrderTable = () => {
                         );
                       })}
                     </Menu>
-                    <Button variant="contained" size="small" color="inherit">
+                    <Button
+                      variant="contained"
+                      size="small"
+                      color="inherit"
+                      onClick={() =>
+                        handleNavigateToRestaurantOrderDetail(item.id)
+                      }
+                    >
                       SEE DETAILS
                     </Button>
                   </div>
