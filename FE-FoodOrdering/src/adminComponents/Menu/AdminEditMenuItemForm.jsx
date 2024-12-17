@@ -280,11 +280,13 @@ export const AdminEditMenuItemForm = () => {
                 name="ingredients"
                 label="Choose Ingredients"
               >
-                {ingredientReducer.ingredients?.map((item) => (
-                  <MenuItem key={item.id} value={item.id}>
-                    {item.name}
-                  </MenuItem>
-                ))}
+                {ingredientReducer.ingredients
+                  ?.filter((item) => item.inStock)
+                  .map((item) => (
+                    <MenuItem key={item.id} value={item.id}>
+                      {item.name}
+                    </MenuItem>
+                  ))}
               </Select>
               {formik.errors.ingredients && (
                 <FormHelperText>{formik.errors.ingredients}</FormHelperText>

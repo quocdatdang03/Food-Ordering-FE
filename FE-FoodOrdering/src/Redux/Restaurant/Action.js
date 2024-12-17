@@ -21,9 +21,15 @@ import {
   GET_RESTAURANT_BY_OWNER_ID_FAILURE,
   GET_RESTAURANT_BY_OWNER_ID_REQUEST,
   GET_RESTAURANT_BY_OWNER_ID_SUCCESS,
+  GET_RESTAURANT_CATEGORY_BY_ID_FAILURE,
+  GET_RESTAURANT_CATEGORY_BY_ID_REQUEST,
+  GET_RESTAURANT_CATEGORY_BY_ID_SUCCESS,
   GET_RESTAURANTS_CATEGORY_FAILURE,
   GET_RESTAURANTS_CATEGORY_REQUEST,
   GET_RESTAURANTS_CATEGORY_SUCCESS,
+  UPDATE_RESTAURANT_CATEGORY_FAILURE,
+  UPDATE_RESTAURANT_CATEGORY_REQUEST,
+  UPDATE_RESTAURANT_CATEGORY_SUCCESS,
   UPDATE_RESTAURANT_FAILURE,
   UPDATE_RESTAURANT_REQUEST,
   UPDATE_RESTAURANT_STATUS_FAILURE,
@@ -202,6 +208,56 @@ export const getRestaurantCategoriesAction =
     } catch (error) {
       console.log(error);
       dispatch({ type: GET_RESTAURANTS_CATEGORY_FAILURE });
+    }
+  };
+
+export const getRestaurantCategorieByIdAction =
+  (jwtToken, categoryId) => async (dispatch) => {
+    dispatch({ type: GET_RESTAURANT_CATEGORY_BY_ID_REQUEST });
+
+    try {
+      const response = await axiosAPI.get(`/admin/categories/${categoryId}`, {
+        headers: {
+          Authorization: "Bearer " + jwtToken,
+        },
+      });
+
+      dispatch({
+        type: GET_RESTAURANT_CATEGORY_BY_ID_SUCCESS,
+        payload: response.data,
+      });
+
+      console.log(response.data);
+    } catch (error) {
+      console.log(error);
+      dispatch({ type: GET_RESTAURANT_CATEGORY_BY_ID_FAILURE });
+    }
+  };
+
+export const updateRestaurantCategoryAction =
+  (jwtToken, requestData) => async (dispatch) => {
+    dispatch({ type: UPDATE_RESTAURANT_CATEGORY_REQUEST });
+
+    try {
+      const response = await axiosAPI.put(
+        `/admin/categories/${requestData.id}`,
+        requestData,
+        {
+          headers: {
+            Authorization: "Bearer " + jwtToken,
+          },
+        }
+      );
+
+      dispatch({
+        type: UPDATE_RESTAURANT_CATEGORY_SUCCESS,
+        payload: response.data,
+      });
+
+      console.log(response.data);
+    } catch (error) {
+      console.log(error);
+      dispatch({ type: UPDATE_RESTAURANT_CATEGORY_FAILURE });
     }
   };
 

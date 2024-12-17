@@ -13,6 +13,7 @@ import {
   Typography,
 } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
+import AddCircleIcon from "@mui/icons-material/AddCircle";
 import { useFormik } from "formik";
 import { createCategoryFormValidation } from "../validation/createCategoryFormValidation";
 import { useDispatch } from "react-redux";
@@ -66,7 +67,7 @@ const AdminCategory = () => {
           title="Food Categories"
           action={
             <IconButton onClick={handleOpenModalAddNewCategory}>
-              <EditIcon />
+              <AddCircleIcon fontSize="large" />
             </IconButton>
           }
         />

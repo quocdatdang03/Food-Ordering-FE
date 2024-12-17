@@ -20,9 +20,15 @@ import {
   GET_RESTAURANT_BY_OWNER_ID_FAILURE,
   GET_RESTAURANT_BY_OWNER_ID_REQUEST,
   GET_RESTAURANT_BY_OWNER_ID_SUCCESS,
+  GET_RESTAURANT_CATEGORY_BY_ID_FAILURE,
+  GET_RESTAURANT_CATEGORY_BY_ID_REQUEST,
+  GET_RESTAURANT_CATEGORY_BY_ID_SUCCESS,
   GET_RESTAURANTS_CATEGORY_FAILURE,
   GET_RESTAURANTS_CATEGORY_REQUEST,
   GET_RESTAURANTS_CATEGORY_SUCCESS,
+  UPDATE_RESTAURANT_CATEGORY_FAILURE,
+  UPDATE_RESTAURANT_CATEGORY_REQUEST,
+  UPDATE_RESTAURANT_CATEGORY_SUCCESS,
   UPDATE_RESTAURANT_FAILURE,
   UPDATE_RESTAURANT_REQUEST,
   UPDATE_RESTAURANT_STATUS_FAILURE,
@@ -41,6 +47,7 @@ const initialStates = {
   events: [],
   restaurantEvents: [],
   categories: [],
+  category: null,
 };
 
 export const restaurantReducer = (state = initialStates, action) => {
@@ -55,6 +62,8 @@ export const restaurantReducer = (state = initialStates, action) => {
     case DELETE_CATEGORY_REQUEST:
     case GET_RESTAURANTS_CATEGORY_REQUEST:
     case UPDATE_RESTAURANT_STATUS_REQUEST:
+    case GET_RESTAURANT_CATEGORY_BY_ID_REQUEST:
+    case UPDATE_RESTAURANT_CATEGORY_REQUEST:
       return {
         ...state,
         isLoading: true,
@@ -121,6 +130,22 @@ export const restaurantReducer = (state = initialStates, action) => {
         categories: action.payload,
       };
 
+    case GET_RESTAURANT_CATEGORY_BY_ID_SUCCESS:
+      return {
+        ...state,
+        isLoading: false,
+        category: action.payload,
+      };
+
+    case UPDATE_RESTAURANT_CATEGORY_SUCCESS:
+      return {
+        ...state,
+        isLoading: false,
+        categories: state.categories.map((item) =>
+          item.id === action.payload.id ? action.payload : item
+        ),
+      };
+
     case DELETE_CATEGORY_SUCCESS:
       return {
         ...state,
@@ -141,6 +166,8 @@ export const restaurantReducer = (state = initialStates, action) => {
     case DELETE_CATEGORY_FAILURE:
     case GET_RESTAURANTS_CATEGORY_FAILURE:
     case UPDATE_RESTAURANT_STATUS_FAILURE:
+    case GET_RESTAURANT_CATEGORY_BY_ID_FAILURE:
+    case UPDATE_RESTAURANT_CATEGORY_FAILURE:
       return {
         ...state,
         isLoading: false,
