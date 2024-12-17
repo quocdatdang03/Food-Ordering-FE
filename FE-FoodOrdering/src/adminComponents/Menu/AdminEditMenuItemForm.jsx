@@ -28,6 +28,8 @@ import {
 import { useNavigate, useParams } from "react-router-dom";
 import { menuItemReducer } from "../../Redux/Menu/Reducer";
 
+import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
+
 export const AdminEditMenuItemForm = () => {
   const { restaurantReducer, ingredientReducer, menuItemReducer } = useSelector(
     (store) => store
@@ -107,6 +109,15 @@ export const AdminEditMenuItemForm = () => {
 
   return (
     <div className="w-full">
+      <div className="my-5">
+        <Button
+          className="inline-block"
+          variant="contained"
+          onClick={() => navigate("/admin/restaurants/menus")}
+        >
+          <ArrowBackIosIcon /> <span>Back to Menu</span>
+        </Button>
+      </div>
       <h1 className="text-center text-2xl font-bold mb-5">Edit Menu Item</h1>
       <div className="">
         <form className="space-y-5" onSubmit={formik.handleSubmit}>

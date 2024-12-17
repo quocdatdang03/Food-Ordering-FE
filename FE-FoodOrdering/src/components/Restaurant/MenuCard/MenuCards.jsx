@@ -46,6 +46,8 @@ const MenuCards = ({ item }) => {
     }
   };
 
+  console.log(item);
+
   return (
     <div className="w-full">
       <Accordion>
@@ -93,9 +95,15 @@ const MenuCards = ({ item }) => {
                 );
               })}
             </div>
-            <Button variant="contained" onClick={handleAddTocart}>
-              Add to cart
-            </Button>
+            {item?.available ? (
+              <Button variant="contained" onClick={handleAddTocart}>
+                Add to cart
+              </Button>
+            ) : (
+              <Button disabled color="error">
+                Out of Stock
+              </Button>
+            )}
           </form>
         </AccordionDetails>
       </Accordion>

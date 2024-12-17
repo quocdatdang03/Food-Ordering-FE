@@ -109,7 +109,7 @@ export const addToFavoritesAction =
 export const logoutAction = () => async (dispatch) => {
   try {
     // remove jwtToken from localStorage :
-    localStorage.clear();
+    localStorage.removeItem("jwtToken");
 
     dispatch({ type: LOGOUT });
     console.log("LOGOUT SUCCESS");
