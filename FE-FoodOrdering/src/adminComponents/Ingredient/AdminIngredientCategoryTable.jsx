@@ -26,30 +26,7 @@ import {
   createIngredientCategoryAction,
   getIngredientCategoriesOfRestaurantAction,
 } from "../../Redux/Ingredient/Action";
-
-const fakeDatas = [
-  {
-    id: 1,
-    name: "Sauce",
-  },
-  {
-    id: 2,
-    name: "Bread",
-  },
-  {
-    id: 3,
-    name: "Protein",
-  },
-  {
-    id: 4,
-    name: "Vegetable",
-  },
-  {
-    id: 5,
-    name: "Dairy",
-  },
-];
-
+import AddCircleIcon from "@mui/icons-material/AddCircle";
 const style = {
   position: "absolute",
   top: "50%",
@@ -103,7 +80,7 @@ const AdminIngredientCategoryTable = ({ jwtToken, dispatch }) => {
           title="Ingredient Categories"
           action={
             <IconButton onClick={handleOpenModalAddNewIngredientCategory}>
-              <EditIcon />
+              <AddCircleIcon fontSize="large" />
             </IconButton>
           }
         />
@@ -113,6 +90,7 @@ const AdminIngredientCategoryTable = ({ jwtToken, dispatch }) => {
               <TableRow>
                 <TableCell align="center">Id</TableCell>
                 <TableCell align="center">Name</TableCell>
+                <TableCell align="center">Action</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
@@ -123,6 +101,11 @@ const AdminIngredientCategoryTable = ({ jwtToken, dispatch }) => {
                 >
                   <TableCell align="center">{item.id}</TableCell>
                   <TableCell align="center">{item.name}</TableCell>
+                  <TableCell align="center">
+                    <IconButton>
+                      <EditIcon color="info" />
+                    </IconButton>
+                  </TableCell>
                 </TableRow>
               ))}
             </TableBody>

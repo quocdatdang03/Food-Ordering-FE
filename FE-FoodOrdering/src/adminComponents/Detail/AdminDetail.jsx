@@ -4,11 +4,13 @@ import FacebookIcon from "@mui/icons-material/Facebook";
 import InstagramIcon from "@mui/icons-material/Instagram";
 import { useDispatch, useSelector } from "react-redux";
 import { updateRestaurantStatusAction } from "../../Redux/Restaurant/Action";
+import { useNavigate } from "react-router-dom";
 
 const AdminDetail = () => {
   const { restaurantReducer } = useSelector((store) => store);
   const jwtToken = localStorage.getItem("jwtToken");
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   useEffect(() => {
     console.log(restaurantReducer.ownerRestaurant);
@@ -21,18 +23,31 @@ const AdminDetail = () => {
 
   return (
     <div>
-      <div className="flex items-center justify-center gap-x-5 mb-7">
+      <div className="flex flex-col md:flex-row items-center justify-center gap-5 mb-7">
         <h1 className="text-4xl md:text-5xl font-bold">
           {restaurantReducer.ownerRestaurant?.name}
         </h1>
-        <Button
-          variant="contained"
-          color={restaurantReducer.ownerRestaurant?.open ? "error" : "success"}
-          sx={{ color: "white" }}
-          onClick={handleChangeRestaurantStatus}
-        >
-          {restaurantReducer.ownerRestaurant?.open ? "CLOSE" : "OPEN"}
-        </Button>
+        <div className="flex items-center justify-around gap-3">
+          <Button
+            variant="contained"
+            color={
+              restaurantReducer.ownerRestaurant?.open ? "error" : "success"
+            }
+            sx={{ color: "white" }}
+            onClick={handleChangeRestaurantStatus}
+          >
+            {restaurantReducer.ownerRestaurant?.open ? "CLOSE" : "OPEN"}
+          </Button>
+          <Button
+            variant="contained"
+            className="uppercase"
+            color="info"
+            style={{ color: "white" }}
+            onClick={() => navigate("edit")}
+          >
+            Update
+          </Button>
+        </div>
       </div>
 
       <Card>

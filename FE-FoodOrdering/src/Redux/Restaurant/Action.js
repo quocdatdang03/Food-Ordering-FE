@@ -117,7 +117,6 @@ export const createRestaurantAction =
 
 export const updateRestaurantAction = (requestData) => async (dispatch) => {
   dispatch({ type: UPDATE_RESTAURANT_REQUEST });
-
   try {
     const response = await axiosAPI.put(
       `/admin/restaurants/${requestData.restaurantId}`,

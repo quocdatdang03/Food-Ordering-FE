@@ -33,43 +33,7 @@ import {
   updateStockOfIngredientAction,
 } from "../../Redux/Ingredient/Action";
 
-const fakeDatas = [
-  {
-    id: 1,
-    name: "Hamburger",
-    price: 19923,
-    ingredientCategory: "Bread",
-    availability: false,
-  },
-  {
-    id: 2,
-    name: "Lettuce",
-    price: 19923,
-    ingredientCategory: "Vegetable",
-    availability: true,
-  },
-  {
-    id: 3,
-    name: "Onion slices",
-    price: 19923,
-    ingredientCategory: "Vegetable",
-    availability: false,
-  },
-  {
-    id: 4,
-    name: "Hamburger",
-    price: 19923,
-    ingredientCategory: "Bread",
-    availability: true,
-  },
-  {
-    id: 5,
-    name: "Hamburger",
-    price: 19923,
-    ingredientCategory: "Bread",
-    availability: true,
-  },
-];
+import AddCircleIcon from "@mui/icons-material/AddCircle";
 
 const style = {
   position: "absolute",
@@ -130,7 +94,7 @@ const AdminIngredientTable = ({ jwtToken, dispatch }) => {
           title="Ingredients"
           action={
             <IconButton onClick={handleOpenModalAddNewIngredient}>
-              <EditIcon />
+              <AddCircleIcon fontSize="large" />
             </IconButton>
           }
         />
@@ -142,6 +106,7 @@ const AdminIngredientTable = ({ jwtToken, dispatch }) => {
                 <TableCell align="center">Name</TableCell>
                 <TableCell align="center">Category</TableCell>
                 <TableCell align="center">Availability</TableCell>
+                <TableCell align="center">Action</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
@@ -170,6 +135,11 @@ const AdminIngredientTable = ({ jwtToken, dispatch }) => {
                         Out of Stock
                       </Button>
                     )}
+                  </TableCell>
+                  <TableCell align="center">
+                    <IconButton>
+                      <EditIcon color="info" />
+                    </IconButton>
                   </TableCell>
                 </TableRow>
               ))}

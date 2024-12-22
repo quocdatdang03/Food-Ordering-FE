@@ -32,6 +32,7 @@ import { getMenuItemsByRestaurantIdAction } from "../Redux/Menu/Action";
 import { AdminEditMenuItemForm } from "./Menu/AdminEditMenuItemForm";
 import { getRestaurantOrdersAction } from "../Redux/RestaurantOrder/Action";
 import AdminOrderDetails from "./Order/AdminOrderDetails";
+import UpdateRestaurantForm from "./UpdateRestaurantForm";
 
 const drawerWidth = 350;
 
@@ -179,6 +180,7 @@ const AdminPanel = () => {
           <Route path="/ingredients" element={<AdminIngredient />} />
           <Route path="/events" element={<AdminEvent />} />
           <Route path="/details" element={<AdminDetail />} />
+          <Route path="/details/edit" element={<UpdateRestaurantForm />} />
         </Routes>
       </Main>
     </Box>
