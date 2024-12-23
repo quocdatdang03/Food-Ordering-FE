@@ -21,7 +21,7 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 
 import EditIcon from "@mui/icons-material/Edit";
 import { useFormik } from "formik";
@@ -30,6 +30,9 @@ import { ingredientReducer } from "../../Redux/Ingredient/Reducer";
 import { useSelector } from "react-redux";
 import {
   createIngredientAction,
+  getIngredientByIdAction,
+  getIngredientsOfRestaurantAction,
+  updateIngredientOfRestaurantAction,
   updateStockOfIngredientAction,
 } from "../../Redux/Ingredient/Action";
 
@@ -63,9 +66,18 @@ const AdminIngredientTable = ({ jwtToken, dispatch }) => {
 
   const handleCloseModalAddNewIngredient = () => setOpen(false);
 
+  const [openEdit, setOpenEdit] = useState(false);
+  const handleOpenModalEditIngredient = (ingredientId) => {
+    dispatch(getIngredientByIdAction(jwtToken, ingredientId));
+
+    setOpenEdit(true);
+  };
+
+  const handleCloseModalEditIngredient = () => setOpenEdit(false);
+
   const inputNameRef = useRef(null);
 
-  // Handling Form Submit Order (create order) :
+  // Handling Form Submit Ingredient (create ingredient) :
   const formik = useFormik({
     initialValues: initialValues,
     validationSchema: createIngredientFormValidation,
@@ -86,6 +98,36 @@ const AdminIngredientTable = ({ jwtToken, dispatch }) => {
   const handleUpdateStockStatus = (ingredientId) => {
     dispatch(updateStockOfIngredientAction(jwtToken, ingredientId));
   };
+
+  useEffect(() => {
+    dispatch(
+      getIngredientsOfRestaurantAction(
+        jwtToken,
+        restaurantReducer.ownerRestaurant?.id
+      )
+    );
+  }, [ingredientReducer?.ingredientCategories]);
+
+  // Handling Form Submit Ingredient (Edit ingredient) :
+  const formikEdit = useFormik({
+    enableReinitialize: true,
+    initialValues: {
+      name: ingredientReducer?.ingredient?.name || "",
+      categoryId: ingredientReducer?.ingredient?.category.id || "",
+    },
+    // validationSchema: createIngredientFormValidation,
+    onSubmit: (values, { resetForm }) => {
+      const requestData = {
+        ingredientId: ingredientReducer?.ingredient?.id,
+        ...values,
+      };
+
+      dispatch(updateIngredientOfRestaurantAction(jwtToken, requestData));
+
+      resetForm();
+      setOpenEdit(false);
+    },
+  });
 
   return (
     <div className="lg:col-span-8">
@@ -137,7 +179,9 @@ const AdminIngredientTable = ({ jwtToken, dispatch }) => {
                     )}
                   </TableCell>
                   <TableCell align="center">
-                    <IconButton>
+                    <IconButton
+                      onClick={() => handleOpenModalEditIngredient(item.id)}
+                    >
                       <EditIcon color="info" />
                     </IconButton>
                   </TableCell>
@@ -211,6 +255,79 @@ const AdminIngredientTable = ({ jwtToken, dispatch }) => {
                 type="submit"
               >
                 Create
+              </Button>
+            </form>
+          </Box>
+        </Fade>
+      </Modal>
+
+      {/* Modal Edit Ingredient */}
+      <Modal
+        open={openEdit}
+        onClose={handleCloseModalEditIngredient}
+        closeAfterTransition
+        slots={{ backdrop: Backdrop }}
+        slotProps={{
+          backdrop: {
+            timeout: 500,
+          },
+        }}
+      >
+        <Fade in={openEdit}>
+          <Box sx={style}>
+            <Typography variant="h5" component="h1" sx={{ marginBottom: 2 }}>
+              Edit Ingredient
+            </Typography>
+            <form className="w-full" onSubmit={formikEdit.handleSubmit}>
+              <TextField
+                label="Ingredient Name"
+                variant="outlined"
+                fullWidth
+                sx={{ marginBottom: 2 }}
+                type="text"
+                name="name"
+                onChange={formikEdit.handleChange}
+                value={formikEdit.values.name}
+                error={
+                  formikEdit.errors.name && Boolean(formikEdit.errors.name)
+                }
+                helperText={formikEdit.errors.name && formikEdit.errors.name}
+                inputRef={inputNameRef}
+              />
+              <FormControl
+                fullWidth
+                error={Boolean(
+                  formikEdit.errors.categoryId && formikEdit.touched.categoryId
+                )}
+              >
+                <InputLabel>Choose Category</InputLabel>
+                <Select
+                  value={formikEdit.values.categoryId}
+                  label="Choose Category"
+                  name="categoryId"
+                  onChange={formikEdit.handleChange}
+                >
+                  {ingredientReducer.ingredientCategories?.map((item) => {
+                    return (
+                      <MenuItem key={item.id} value={item.id}>
+                        {item.name}
+                      </MenuItem>
+                    );
+                  })}
+                </Select>
+                {formikEdit.errors.categoryId && (
+                  <FormHelperText>
+                    {formikEdit.errors.categoryId}
+                  </FormHelperText>
+                )}
+              </FormControl>
+              <Button
+                variant="contained"
+                fullWidth
+                sx={{ marginTop: 3 }}
+                type="submit"
+              >
+                Update
               </Button>
             </form>
           </Box>

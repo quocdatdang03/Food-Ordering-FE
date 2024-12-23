@@ -6,6 +6,9 @@ import {
   CREATE_INGREDIENT_FAILURE,
   CREATE_INGREDIENT_REQUEST,
   CREATE_INGREDIENT_SUCCESS,
+  GET_INGREDIENT_BY_ID_FAILURE,
+  GET_INGREDIENT_BY_ID_REQUEST,
+  GET_INGREDIENT_BY_ID_SUCCESS,
   GET_INGREDIENT_BY_RESTAURANT_ID_FAILURE,
   GET_INGREDIENT_BY_RESTAURANT_ID_REQUEST,
   GET_INGREDIENT_BY_RESTAURANT_ID_SUCCESS,
@@ -15,6 +18,12 @@ import {
   GET_INGREDIENT_CATEGORY_BY_RESTAURANT_ID_FAILURE,
   GET_INGREDIENT_CATEGORY_BY_RESTAURANT_ID_REQUEST,
   GET_INGREDIENT_CATEGORY_BY_RESTAURANT_ID_SUCCESS,
+  UPDATE_INGREDIENT_CATEGORY_FAILURE,
+  UPDATE_INGREDIENT_CATEGORY_REQUEST,
+  UPDATE_INGREDIENT_CATEGORY_SUCCESS,
+  UPDATE_INGREDIENT_FAILURE,
+  UPDATE_INGREDIENT_REQUEST,
+  UPDATE_INGREDIENT_SUCCESS,
   UPDATE_STOCK_FAILURE,
   UPDATE_STOCK_REQUEST,
   UPDATE_STOCK_SUCCESS,
@@ -69,6 +78,35 @@ export const getIngredientCategoryByIdAction =
       console.log(error);
       dispatch({
         type: GET_INGREDIENT_CATEGORY_BY_ID_FAILURE,
+        payload: error,
+      });
+    }
+  };
+
+export const getIngredientByIdAction =
+  (jwtToken, ingredientId) => async (dispatch) => {
+    dispatch({ type: GET_INGREDIENT_BY_ID_REQUEST });
+
+    try {
+      const response = await axiosAPI.get(
+        `/admin/ingredients/${ingredientId}`,
+        {
+          headers: {
+            Authorization: "Bearer " + jwtToken,
+          },
+        }
+      );
+
+      console.log(response.data);
+
+      dispatch({
+        type: GET_INGREDIENT_BY_ID_SUCCESS,
+        payload: response.data,
+      });
+    } catch (error) {
+      console.log(error);
+      dispatch({
+        type: GET_INGREDIENT_BY_ID_FAILURE,
         payload: error,
       });
     }
@@ -176,6 +214,62 @@ export const updateStockOfIngredientAction =
       console.log(error);
       dispatch({
         type: UPDATE_STOCK_FAILURE,
+        payload: error,
+      });
+    }
+  };
+
+export const updateIngredientCategoryOfRestaurantAction =
+  (jwtToken, requestData) => async (dispatch) => {
+    dispatch({ type: UPDATE_INGREDIENT_CATEGORY_REQUEST });
+
+    try {
+      const response = await axiosAPI.put(
+        `/admin/ingredients/category/${requestData.categoryId}`,
+        requestData,
+        {
+          headers: {
+            Authorization: "Bearer " + jwtToken,
+          },
+        }
+      );
+
+      dispatch({
+        type: UPDATE_INGREDIENT_CATEGORY_SUCCESS,
+        payload: response.data,
+      });
+    } catch (error) {
+      console.log(error);
+      dispatch({
+        type: UPDATE_INGREDIENT_CATEGORY_FAILURE,
+        payload: error,
+      });
+    }
+  };
+
+export const updateIngredientOfRestaurantAction =
+  (jwtToken, requestData) => async (dispatch) => {
+    dispatch({ type: UPDATE_INGREDIENT_REQUEST });
+
+    try {
+      const response = await axiosAPI.put(
+        `/admin/ingredients/${requestData.ingredientId}`,
+        requestData,
+        {
+          headers: {
+            Authorization: "Bearer " + jwtToken,
+          },
+        }
+      );
+
+      dispatch({
+        type: UPDATE_INGREDIENT_SUCCESS,
+        payload: response.data,
+      });
+    } catch (error) {
+      console.log(error);
+      dispatch({
+        type: UPDATE_INGREDIENT_FAILURE,
         payload: error,
       });
     }

@@ -24,7 +24,8 @@ import { useFormik } from "formik";
 import { useDispatch, useSelector } from "react-redux";
 import {
   createIngredientCategoryAction,
-  getIngredientCategoriesOfRestaurantAction,
+  getIngredientCategoryByIdAction,
+  updateIngredientCategoryOfRestaurantAction,
 } from "../../Redux/Ingredient/Action";
 import AddCircleIcon from "@mui/icons-material/AddCircle";
 const style = {
@@ -50,9 +51,17 @@ const AdminIngredientCategoryTable = ({ jwtToken, dispatch }) => {
   );
 
   const [open, setOpen] = useState(false);
+  const [openEdit, setOpenEdit] = useState(false);
   const handleOpenModalAddNewIngredientCategory = () => setOpen(true);
 
   const handleCloseModalAddNewIngredientCategory = () => setOpen(false);
+
+  const handleOpenModalEditIngredientCategory = (categoryId) => {
+    dispatch(getIngredientCategoryByIdAction(jwtToken, categoryId));
+
+    setOpenEdit(true);
+  };
+  const handleCloseModalEditIngredientCategory = () => setOpenEdit(false);
 
   const inputNameRef = useRef(null);
 
@@ -70,6 +79,29 @@ const AdminIngredientCategoryTable = ({ jwtToken, dispatch }) => {
 
       resetForm();
       inputNameRef.current.focus();
+    },
+  });
+
+  // Handling Form Submit Order (create order) :
+  const formikEdit = useFormik({
+    enableReinitialize: true,
+    initialValues: {
+      name: ingredientReducer?.ingredientCategory?.name,
+    },
+    validationSchema: createIngredientCategoryFormValidation,
+    onSubmit: (values, { resetForm }) => {
+      const requestData = {
+        categoryId: ingredientReducer?.ingredientCategory.id,
+        name: values.name,
+        restaurantId: restaurantReducer.ownerRestaurant?.id,
+      };
+
+      dispatch(
+        updateIngredientCategoryOfRestaurantAction(jwtToken, requestData)
+      );
+
+      resetForm();
+      setOpenEdit(false);
     },
   });
 
@@ -102,7 +134,11 @@ const AdminIngredientCategoryTable = ({ jwtToken, dispatch }) => {
                   <TableCell align="center">{item.id}</TableCell>
                   <TableCell align="center">{item.name}</TableCell>
                   <TableCell align="center">
-                    <IconButton>
+                    <IconButton
+                      onClick={() =>
+                        handleOpenModalEditIngredientCategory(item.id)
+                      }
+                    >
                       <EditIcon color="info" />
                     </IconButton>
                   </TableCell>
@@ -151,6 +187,52 @@ const AdminIngredientCategoryTable = ({ jwtToken, dispatch }) => {
                 type="submit"
               >
                 Create
+              </Button>
+            </form>
+          </Box>
+        </Fade>
+      </Modal>
+
+      {/* Modal Edit Ingredient Category */}
+      <Modal
+        open={openEdit}
+        onClose={handleCloseModalEditIngredientCategory}
+        closeAfterTransition
+        slots={{ backdrop: Backdrop }}
+        slotProps={{
+          backdrop: {
+            timeout: 500,
+          },
+        }}
+      >
+        <Fade in={openEdit}>
+          <Box sx={style}>
+            <Typography variant="h5" component="h1" sx={{ marginBottom: 2 }}>
+              Edit Ingredient Category
+            </Typography>
+            <form className="w-full" onSubmit={formikEdit.handleSubmit}>
+              <TextField
+                label="Ingredient Category Name"
+                variant="outlined"
+                fullWidth
+                sx={{ marginBottom: 2 }}
+                type="text"
+                name="name"
+                onChange={formikEdit.handleChange}
+                value={formikEdit.values.name}
+                error={
+                  formikEdit.errors.name && Boolean(formikEdit.errors.name)
+                }
+                helperText={formikEdit.errors.name && formikEdit.errors.name}
+                inputRef={inputNameRef}
+              />
+              <Button
+                variant="contained"
+                fullWidth
+                sx={{ marginTop: 3 }}
+                type="submit"
+              >
+                Update
               </Button>
             </form>
           </Box>

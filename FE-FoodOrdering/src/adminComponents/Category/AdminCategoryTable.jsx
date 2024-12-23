@@ -145,7 +145,7 @@ const AdminCategoryTable = () => {
         jwtToken={jwtToken}
       />
 
-      {/* Model Edit CategoryCategory */}
+      {/* Model Edit Category */}
       <Modal
         open={openEditCategory}
         onClose={handleCloseModalEditCategory}
