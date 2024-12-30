@@ -38,7 +38,9 @@ function App() {
       if (!isTokenExpired(jwtToken)) {
         console.log("Token is: " + jwtToken);
         dispatch(getUserAction());
-        dispatch(getAllCartItemsAction());
+
+        if (authReducer.user?.role === "ROLE_CUSTOMER")
+          dispatch(getAllCartItemsAction());
       }
     }
   }, [jwtToken]);

@@ -124,7 +124,7 @@ const RestaurantDetail = () => {
       </Breadcrumbs>
 
       {/* Restaurant images */}
-      <div className="grid grid-cols-2 gap-3 my-5">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-3 my-5">
         <div className="w-full h-[40vh] col-span-2">
           <img
             className="w-full h-full object-cover object-center"
@@ -163,7 +163,7 @@ const RestaurantDetail = () => {
 
       {/* Restaurant Foods Information */}
       <div className="mt-8 grid grid-cols-12 gap-x-8 relative">
-        <div className="col-span-3 lg:sticky top-[28px]">
+        <div className="col-span-12 md:col-span-4 lg:col-span-3 lg:sticky top-[28px]">
           <Card className="shadow-2xl shadow-white p-5 border-b border-gray-500">
             <h1 className="text-2xl mb-8">Food Type</h1>
             <FormControl>
@@ -212,7 +212,7 @@ const RestaurantDetail = () => {
             </FormControl>
           </Card>
         </div>
-        <div className="col-span-9 flex flex-col gap-y-8">
+        <div className="col-span-12 md:col-span-8 lg:col-span-9 mt-10 md:mt-0 flex flex-col gap-y-8">
           {isDelayedLoading || isMenuItemLoading ? (
             <div className="w-full h-full flex justify-center items-center">
               <CircularProgress />

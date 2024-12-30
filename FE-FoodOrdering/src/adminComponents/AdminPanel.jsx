@@ -13,7 +13,7 @@ import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import useMediaQuery from "@mui/material/useMediaQuery"; // Import useMediaQuery
 import AdminSideBar from "./AdminSideBar";
-import { Route, Routes } from "react-router-dom";
+import { Route, Routes, useNavigate } from "react-router-dom";
 import AdminDashBoard from "./DashBoard/AdminDashBoard";
 import AdminOrder from "./Order/AdminOrder";
 import AdminMenu from "./Menu/AdminMenu";
@@ -33,6 +33,7 @@ import { AdminEditMenuItemForm } from "./Menu/AdminEditMenuItemForm";
 import { getRestaurantOrdersAction } from "../Redux/RestaurantOrder/Action";
 import AdminOrderDetails from "./Order/AdminOrderDetails";
 import UpdateRestaurantForm from "./UpdateRestaurantForm";
+import { Button } from "@mui/material";
 
 const drawerWidth = 350;
 
@@ -74,6 +75,7 @@ const DrawerHeader = styled("div")(({ theme }) => ({
 }));
 
 const AdminPanel = () => {
+  const navigate = useNavigate();
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("md")); // Check if screen is md
   const [open, setOpen] = React.useState(true);
@@ -129,9 +131,18 @@ const AdminPanel = () => {
           >
             <MenuIcon />
           </IconButton>
-          <Typography variant="h6" noWrap component="div">
-            Restaurant Panel
-          </Typography>
+          <div className="flex justify-between w-full">
+            <Typography variant="h6" noWrap component="div">
+              Restaurant Panel
+            </Typography>
+            <Button
+              color="secondary"
+              variant="contained"
+              onClick={() => navigate("/")}
+            >
+              Back To Home
+            </Button>
+          </div>
         </Toolbar>
       </AppBar>
       <Drawer

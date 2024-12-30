@@ -4,7 +4,7 @@ import AccordionSummary from "@mui/material/AccordionSummary";
 import AccordionDetails from "@mui/material/AccordionDetails";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import { Button, Checkbox, FormControlLabel, FormGroup } from "@mui/material";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { addItemToCartAction } from "../../../Redux/Cart/Action";
 
 const MenuCards = ({ item }) => {
@@ -25,6 +25,8 @@ const MenuCards = ({ item }) => {
   const dispatch = useDispatch();
   const jwtToken = localStorage.getItem("jwtToken");
   const [selectedIngredients, setSelectedIngredients] = useState([]);
+  const { authReducer } = useSelector((store) => store);
+  const isRoleCustomer = authReducer.user?.role === "ROLE_CUSTOMER";
 
   const handleAddTocart = () => {
     const requestData = {
@@ -95,14 +97,18 @@ const MenuCards = ({ item }) => {
                 );
               })}
             </div>
-            {item?.available ? (
-              <Button variant="contained" onClick={handleAddTocart}>
-                Add to cart
-              </Button>
-            ) : (
-              <Button disabled color="error">
-                Out of Stock
-              </Button>
+            {isRoleCustomer && (
+              <>
+                {item?.available ? (
+                  <Button variant="contained" onClick={handleAddTocart}>
+                    Add to cart
+                  </Button>
+                ) : (
+                  <Button disabled color="error">
+                    Out of Stock
+                  </Button>
+                )}
+              </>
             )}
           </form>
         </AccordionDetails>

@@ -12,6 +12,7 @@ const RestaurantCards = ({ item }) => {
   const dispatch = useDispatch();
   const { authReducer } = useSelector((store) => store);
   const jwtToken = localStorage.getItem("jwtToken");
+  const isRoleCustomer = authReducer.user?.role === "ROLE_CUSTOMER";
 
   const handleAddToFavorites = (item) => {
     dispatch(addToFavoritesAction(item.id));
@@ -55,16 +56,18 @@ const RestaurantCards = ({ item }) => {
           </h1>
           <p className="text-sm text-gray-400">{item.description}</p>
         </div>
-        <IconButton
-          className="inline-block"
-          onClick={() => handleAddToFavorites(item)}
-        >
-          {isPresentInFavorites(authReducer.favorites, item) ? (
-            <FavoriteIcon className="text-pink-600" />
-          ) : (
-            <FavoriteBorderIcon />
-          )}
-        </IconButton>
+        {isRoleCustomer && (
+          <IconButton
+            className="inline-block"
+            onClick={() => handleAddToFavorites(item)}
+          >
+            {isPresentInFavorites(authReducer.favorites, item) ? (
+              <FavoriteIcon className="text-pink-600" />
+            ) : (
+              <FavoriteBorderIcon />
+            )}
+          </IconButton>
+        )}
       </div>
     </Card>
   );

@@ -77,7 +77,7 @@ const Cart = () => {
 
   return (
     <div className="grid grid-cols-12 gap-5">
-      <div className="col-span-4 lg:min-h-[100vh] pt-10 space-y-9 p-5">
+      <div className="col-span-12 lg:col-span-4 lg:min-h-[100vh] pt-10 space-y-9 p-5">
         {cartReducer.cartItems.map((item) => {
           return <CartItem key={item.id} item={item} />;
         })}
@@ -115,7 +115,7 @@ const Cart = () => {
           </div>
         </div>
       </div>
-      <div className="col-span-8 py-10 px-14 grid grid-cols-3 gap-x-5">
+      <div className="col-span-12 lg:col-span-8 py-10 px-14 grid grid-cols-1 lg:grid-cols-3 gap-5">
         {authReducer.user?.addresses.map((item) => {
           return (
             <div key={item.id}>

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { InputAdornment, TextField } from "@mui/material";
+import { CircularProgress, InputAdornment, TextField } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
 import SearchItem from "./SearchItem";
 import { useDispatch, useSelector } from "react-redux";
@@ -12,6 +12,8 @@ const Search = () => {
   const dispatch = useDispatch();
   const { menuItemReducer } = useSelector((store) => store);
   const jwtToken = localStorage.getItem("jwtToken");
+  const [isDelayedLoading, setIsDelayedLoading] = useState(true);
+  const isMenuItemLoading = menuItemReducer.isLoading;
 
   const handleSetKeyword = (e) => {
     setKeyWord(e.target.value);
@@ -20,6 +22,19 @@ const Search = () => {
   useEffect(() => {
     dispatch(searchMenuItemByKeywordAction(keyword));
   }, [keyword]);
+
+  // hanlde loading :
+  useEffect(() => {
+    if (isMenuItemLoading) {
+      setIsDelayedLoading(true);
+    } else {
+      const timer = setTimeout(() => {
+        setIsDelayedLoading(false);
+      }, 800);
+
+      return () => clearTimeout(timer);
+    }
+  }, [isMenuItemLoading]);
 
   return (
     <div className="flex justify-center mx-10 lg:mx-60 mt-10">
@@ -48,7 +63,11 @@ const Search = () => {
         />
 
         <div className="mt-8 space-y-5">
-          {keyword ? (
+          {isDelayedLoading ? (
+            <div className="min-h-[50vh] flex items-center justify-center">
+              <CircularProgress />
+            </div>
+          ) : keyword ? (
             menuItemReducer.menuItemsSearch.map((item) => {
               return <SearchItem key={item.id} item={item} />;
             })
@@ -61,12 +80,14 @@ const Search = () => {
 
         {/* Show not found foods with given keyword */}
         <div className="mt-8">
-          {menuItemReducer.menuItemsSearch.length <= 0 && keyword && (
-            <h1 className="text-2xl text-center">
-              Sorry, no food items were found matching the keyword "{keyword}".
-              Please try searching with a different term.
-            </h1>
-          )}
+          {!isDelayedLoading &&
+            menuItemReducer.menuItemsSearch.length <= 0 &&
+            keyword && (
+              <h1 className="text-2xl text-center">
+                Sorry, no food items were found matching the keyword "{keyword}
+                ". Please try searching with a different term.
+              </h1>
+            )}
         </div>
       </div>
     </div>

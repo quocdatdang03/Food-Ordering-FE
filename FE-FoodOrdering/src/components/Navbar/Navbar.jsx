@@ -20,6 +20,8 @@ const Navbar = () => {
 
   console.log(cartReducer.cartItems);
 
+  const isRoleCustomer = authReducer.user?.role === "ROLE_CUSTOMER";
+
   return (
     <div className="px-5 z-50 py-3 bg-[#e91e63] lg:px-20 flex justify-between">
       {/* Logo */}
@@ -55,16 +57,18 @@ const Navbar = () => {
             </IconButton>
           )}
         </div>
-        <div>
-          <IconButton>
-            <Badge
-              color="secondary"
-              badgeContent={cartReducer.cartItems.length}
-            >
-              <ShoppingCartIcon onClick={() => navigate("/cart")} />
-            </Badge>
-          </IconButton>
-        </div>
+        {isRoleCustomer && (
+          <div>
+            <IconButton>
+              <Badge
+                color="secondary"
+                badgeContent={cartReducer.cartItems.length}
+              >
+                <ShoppingCartIcon onClick={() => navigate("/cart")} />
+              </Badge>
+            </IconButton>
+          </div>
+        )}
       </div>
     </div>
   );

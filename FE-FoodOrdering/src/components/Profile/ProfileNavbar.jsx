@@ -19,6 +19,8 @@ import {
   ListItemText,
   useMediaQuery,
 } from "@mui/material";
+import { logoutAction } from "../../Redux/Auth/Action";
+import { useDispatch } from "react-redux";
 
 const profileMenu = [
   {
@@ -66,10 +68,16 @@ const profileMenu = [
 const ProfileNavbar = () => {
   const isLargeScreen = useMediaQuery("(min-with: 1024px)");
 
+  const dispatch = useDispatch();
   const navigate = useNavigate();
 
   const handleNavigate = (path) => {
-    navigate(`/my-profile/${path}`);
+    if (path === "logout") {
+      dispatch(logoutAction());
+      navigate("/account/login");
+    } else {
+      navigate(`/my-profile/${path}`);
+    }
   };
 
   return (
