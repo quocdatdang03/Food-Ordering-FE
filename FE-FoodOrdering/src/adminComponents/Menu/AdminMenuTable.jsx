@@ -1,8 +1,9 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 import {
   Button,
   Chip,
+  CircularProgress,
   IconButton,
   Table,
   TableBody,
@@ -25,6 +26,8 @@ const AdminMenuTable = () => {
   const jwtToken = localStorage.getItem("jwtToken");
   const [selectedMenuItem, setSelectedMenuItem] = useState(null);
   const navigate = useNavigate();
+  const [isDelayedLoading, setIsDelayedLoading] = useState(true);
+  const isMenuItemLoading = menuItemReducer.isLoading;
 
   const handleUpdateStockStatus = (foodId) => {
     dispatch(updateMenuItemAvailableAction(jwtToken, foodId));
@@ -41,82 +44,101 @@ const AdminMenuTable = () => {
     setSelectedMenuItem(null);
   };
 
+  // hanlde loading :
+  useEffect(() => {
+    if (isMenuItemLoading) {
+      setIsDelayedLoading(true);
+    } else {
+      const timer = setTimeout(() => {
+        setIsDelayedLoading(false);
+      }, 500);
+      return () => clearTimeout(timer);
+    }
+  }, [isMenuItemLoading]);
+
   return (
     <>
-      <TableContainer>
-        <Table>
-          <TableHead>
-            <TableRow>
-              <TableCell align="center">Image</TableCell>
-              <TableCell align="center">Title</TableCell>
-              <TableCell align="center">Ingredients</TableCell>
-              <TableCell align="center">Price</TableCell>
-              <TableCell align="center">Availability</TableCell>
-              <TableCell align="center">Action</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {menuItemReducer.menuItems?.map((item) => (
-              <TableRow
-                key={item.id}
-                sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
-              >
-                <TableCell align="center">
-                  <img
-                    className="h-[3rem] w-[3rem] rounded-full object-cover object-center"
-                    src={item.images?.[0]}
-                    alt={item.name}
-                  />
-                </TableCell>
-                <TableCell align="center">{item.name}</TableCell>
-                <TableCell align="center">
-                  {item.ingredients?.map((ingredient) => {
-                    return (
-                      <Chip
-                        className="mx-1 my-1"
-                        key={ingredient.id}
-                        label={ingredient.name}
-                        size="medium"
-                      />
-                    );
-                  })}
-                </TableCell>
-                <TableCell align="center">${item.price}</TableCell>
-                <TableCell align="center">
-                  {item?.available ? (
-                    <Button
-                      variant="text"
-                      sx={{ color: "#26c665" }}
-                      onClick={() => handleUpdateStockStatus(item.id)}
-                    >
-                      In Stock
-                    </Button>
-                  ) : (
-                    <Button
-                      variant="text"
-                      onClick={() => handleUpdateStockStatus(item.id)}
-                    >
-                      Out of Stock
-                    </Button>
-                  )}
-                </TableCell>
-                <TableCell align="center">
-                  <div className="flex items-center">
-                    <IconButton
-                      onClick={() => navigate("edit-menu/" + item.id)}
-                    >
-                      <EditIcon color="info" />
-                    </IconButton>
-                    <IconButton onClick={() => handleOpenModal(item)}>
-                      <DeleteIcon color="error" />
-                    </IconButton>
-                  </div>
-                </TableCell>
+      {isDelayedLoading ? (
+        <div className="w-full min-h-[50vh] flex items-center justify-center">
+          <CircularProgress />
+        </div>
+      ) : (
+        <TableContainer>
+          <Table>
+            <TableHead>
+              <TableRow>
+                <TableCell align="center">Image</TableCell>
+                <TableCell align="center">Title</TableCell>
+                <TableCell align="center">Ingredients</TableCell>
+                <TableCell align="center">Price</TableCell>
+                <TableCell align="center">Availability</TableCell>
+                <TableCell align="center">Action</TableCell>
               </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </TableContainer>
+            </TableHead>
+            <TableBody>
+              {menuItemReducer.menuItems?.map((item) => (
+                <TableRow
+                  key={item.id}
+                  sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
+                >
+                  <TableCell align="center">
+                    <img
+                      className="h-[3rem] w-[3rem] rounded-full object-cover object-center"
+                      src={item.images?.[0]}
+                      alt={item.name}
+                    />
+                  </TableCell>
+                  <TableCell align="center">{item.name}</TableCell>
+                  <TableCell align="center">
+                    {item.ingredients?.map((ingredient) => {
+                      return (
+                        <Chip
+                          className="mx-1 my-1"
+                          key={ingredient.id}
+                          label={ingredient.name}
+                          size="medium"
+                        />
+                      );
+                    })}
+                  </TableCell>
+                  <TableCell align="center">${item.price}</TableCell>
+                  <TableCell align="center">
+                    {item?.available ? (
+                      <Button
+                        variant="text"
+                        sx={{ color: "#26c665" }}
+                        onClick={() => handleUpdateStockStatus(item.id)}
+                      >
+                        In Stock
+                      </Button>
+                    ) : (
+                      <Button
+                        variant="text"
+                        onClick={() => handleUpdateStockStatus(item.id)}
+                      >
+                        Out of Stock
+                      </Button>
+                    )}
+                  </TableCell>
+                  <TableCell align="center">
+                    <div className="flex items-center">
+                      <IconButton
+                        onClick={() => navigate("edit-menu/" + item.id)}
+                      >
+                        <EditIcon color="info" />
+                      </IconButton>
+                      <IconButton onClick={() => handleOpenModal(item)}>
+                        <DeleteIcon color="error" />
+                      </IconButton>
+                    </div>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </TableContainer>
+      )}
+
       {/* Modal Delete Confirm */}
       <AdminModalDeleteConfirmMenuItem
         open={open}

@@ -12,6 +12,9 @@ import {
   LOGIN_USER_REQUEST,
   LOGIN_USER_SUCCESS,
   LOGOUT,
+  REFRESH_TOKEN_FAILURE,
+  REFRESH_TOKEN_REQUEST,
+  REFRESH_TOKEN_SUCCESS,
   REGISTER_USER_FAILURE,
   REGISTER_USER_REQUEST,
   REGISTER_USER_SUCCESS,
@@ -32,6 +35,7 @@ export const authReducer = (state = initialState, action) => {
     case LOGIN_USER_REQUEST:
     case GET_USER_REQUEST:
     case ADD_TO_FAVORITE_REQUEST:
+    case REFRESH_TOKEN_REQUEST:
       return {
         ...state,
         isLoading: true,
@@ -52,6 +56,13 @@ export const authReducer = (state = initialState, action) => {
         isLoading: false,
         jwtToken: action.payload,
         success: "Login user success",
+      };
+
+    case REFRESH_TOKEN_SUCCESS:
+      return {
+        ...state,
+        isLoading: false,
+        jwtToken: action.payload,
       };
 
     case GET_USER_SUCCESS:
@@ -79,6 +90,7 @@ export const authReducer = (state = initialState, action) => {
     case LOGIN_USER_FAILURE:
     case GET_USER_FAILURE:
     case ADD_TO_FAVORITE_FAILURE:
+    case REFRESH_TOKEN_FAILURE:
       return {
         ...state,
         isLoading: false,

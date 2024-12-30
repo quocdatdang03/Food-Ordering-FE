@@ -38,15 +38,11 @@ import {
   UPDATE_RESTAURANT_SUCCESS,
 } from "./ActionType";
 
-export const getAllRestaurantAction = (jwtToken) => async (dispatch) => {
+export const getAllRestaurantAction = () => async (dispatch) => {
   dispatch({ type: GET_ALL_RESTAURANT_REQUEST });
 
   try {
-    const response = await axiosAPI.get("/restaurants", {
-      headers: {
-        Authorization: "Bearer " + jwtToken,
-      },
-    });
+    const response = await axiosAPI.get("/restaurants");
 
     dispatch({ type: GET_ALL_RESTAURANT_SUCCESS, payload: response.data });
   } catch (error) {
@@ -55,25 +51,20 @@ export const getAllRestaurantAction = (jwtToken) => async (dispatch) => {
   }
 };
 
-export const getRestaurantByIdAction =
-  (jwtToken, restaurantId) => async (dispatch) => {
-    dispatch({ type: GET_RESTAURANT_BY_ID_REQUEST });
+export const getRestaurantByIdAction = (restaurantId) => async (dispatch) => {
+  dispatch({ type: GET_RESTAURANT_BY_ID_REQUEST });
 
-    try {
-      const response = await axiosAPI.get(`/restaurants/${restaurantId}`, {
-        headers: {
-          Authorization: "Bearer " + jwtToken,
-        },
-      });
+  try {
+    const response = await axiosAPI.get(`/restaurants/${restaurantId}`);
 
-      dispatch({ type: GET_RESTAURANT_BY_ID_SUCCESS, payload: response.data });
+    dispatch({ type: GET_RESTAURANT_BY_ID_SUCCESS, payload: response.data });
 
-      return response.data;
-    } catch (error) {
-      console.log(error);
-      dispatch({ type: GET_RESTAURANT_BY_ID_FAILURE, payload: error });
-    }
-  };
+    return response.data;
+  } catch (error) {
+    console.log(error);
+    dispatch({ type: GET_RESTAURANT_BY_ID_FAILURE, payload: error });
+  }
+};
 
 export const getRestaurantByOwnerIdAction = (jwtToken) => async (dispatch) => {
   dispatch({ type: GET_RESTAURANT_BY_OWNER_ID_REQUEST });
@@ -89,6 +80,8 @@ export const getRestaurantByOwnerIdAction = (jwtToken) => async (dispatch) => {
       type: GET_RESTAURANT_BY_OWNER_ID_SUCCESS,
       payload: response.data,
     });
+
+    console.log(response.data);
   } catch (error) {
     console.log(error);
     dispatch({ type: GET_RESTAURANT_BY_OWNER_ID_FAILURE, payload: error });
@@ -184,17 +177,12 @@ export const updateRestaurantStatusAction =
 // ------------ EVENTS :
 // ------------ CATEGORY:
 export const getRestaurantCategoriesAction =
-  (jwtToken, restaurantId) => async (dispatch) => {
+  (restaurantId) => async (dispatch) => {
     dispatch({ type: GET_RESTAURANTS_CATEGORY_REQUEST });
 
     try {
       const response = await axiosAPI.get(
-        `/categories/restaurant/${restaurantId}`,
-        {
-          headers: {
-            Authorization: "Bearer " + jwtToken,
-          },
-        }
+        `/categories/restaurant/${restaurantId}`
       );
 
       dispatch({

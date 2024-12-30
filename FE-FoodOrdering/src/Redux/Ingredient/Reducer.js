@@ -6,6 +6,7 @@ const initialStates = {
   ingredientCategory: null,
   ingredient: null,
   isLoading: false,
+  isIngredientCategoryLoading: false,
   error: null,
   success: null,
 };
@@ -13,16 +14,21 @@ const initialStates = {
 export const ingredientReducer = (state = initialStates, action) => {
   switch (action.type) {
     case actionTypes.CREATE_INGREDIENT_REQUEST:
-    case actionTypes.CREATE_INGREDIENT_CATEGORY_REQUEST:
     case actionTypes.GET_INGREDIENT_BY_RESTAURANT_ID_REQUEST:
-    case actionTypes.GET_INGREDIENT_CATEGORY_BY_RESTAURANT_ID_REQUEST:
-    case actionTypes.GET_INGREDIENT_CATEGORY_BY_ID_REQUEST:
-    case actionTypes.UPDATE_STOCK_REQUEST:
-    case actionTypes.UPDATE_INGREDIENT_CATEGORY_REQUEST:
     case actionTypes.UPDATE_INGREDIENT_REQUEST:
       return {
         ...state,
         isLoading: true,
+        error: null,
+        success: null,
+      };
+
+    case actionTypes.GET_INGREDIENT_CATEGORY_BY_RESTAURANT_ID_REQUEST:
+    case actionTypes.UPDATE_INGREDIENT_CATEGORY_REQUEST:
+    case actionTypes.CREATE_INGREDIENT_CATEGORY_REQUEST:
+      return {
+        ...state,
+        isIngredientCategoryLoading: true,
         error: null,
         success: null,
       };
@@ -37,21 +43,21 @@ export const ingredientReducer = (state = initialStates, action) => {
     case actionTypes.GET_INGREDIENT_CATEGORY_BY_RESTAURANT_ID_SUCCESS:
       return {
         ...state,
-        isLoading: false,
+        isIngredientCategoryLoading: false,
         ingredientCategories: action.payload,
       };
 
     case actionTypes.GET_INGREDIENT_CATEGORY_BY_ID_SUCCESS:
       return {
         ...state,
-        isLoading: false,
+        isIngredientCategoryLoading: false,
         ingredientCategory: action.payload,
       };
 
     case actionTypes.CREATE_INGREDIENT_CATEGORY_SUCCESS:
       return {
         ...state,
-        isLoading: false,
+        isIngredientCategoryLoading: false,
         ingredientCategories: [...state.ingredientCategories, action.payload],
       };
 
@@ -74,7 +80,7 @@ export const ingredientReducer = (state = initialStates, action) => {
     case actionTypes.UPDATE_INGREDIENT_CATEGORY_SUCCESS:
       return {
         ...state,
-        isLoading: false,
+        isIngredientCategoryLoading: false,
         ingredientCategories: state.ingredientCategories.map((item) =>
           item.id === action.payload.id ? action.payload : item
         ),
@@ -98,17 +104,24 @@ export const ingredientReducer = (state = initialStates, action) => {
 
     // FAILURE
     case actionTypes.CREATE_INGREDIENT_FAILURE:
-    case actionTypes.CREATE_INGREDIENT_CATEGORY_FAILURE:
     case actionTypes.GET_INGREDIENT_BY_RESTAURANT_ID_FAILURE:
-    case actionTypes.GET_INGREDIENT_CATEGORY_BY_RESTAURANT_ID_FAILURE:
-    case actionTypes.GET_INGREDIENT_CATEGORY_BY_ID_FAILURE:
     case actionTypes.GET_INGREDIENT_BY_ID_FAILURE:
     case actionTypes.UPDATE_STOCK_FAILURE:
-    case actionTypes.UPDATE_INGREDIENT_CATEGORY_FAILURE:
     case actionTypes.UPDATE_INGREDIENT_FAILURE:
       return {
         ...state,
         isLoading: false,
+        error: action.payload,
+        success: null,
+      };
+
+    case actionTypes.GET_INGREDIENT_CATEGORY_BY_RESTAURANT_ID_FAILURE:
+    case actionTypes.CREATE_INGREDIENT_CATEGORY_FAILURE:
+    case actionTypes.GET_INGREDIENT_CATEGORY_BY_ID_FAILURE:
+    case actionTypes.UPDATE_INGREDIENT_CATEGORY_FAILURE:
+      return {
+        ...state,
+        isIngredientCategoryLoading: false,
         error: action.payload,
         success: null,
       };

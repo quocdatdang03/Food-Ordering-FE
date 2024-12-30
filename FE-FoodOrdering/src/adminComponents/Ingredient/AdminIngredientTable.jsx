@@ -4,6 +4,7 @@ import {
   Button,
   Card,
   CardHeader,
+  CircularProgress,
   Fade,
   FormControl,
   FormHelperText,
@@ -60,6 +61,9 @@ const AdminIngredientTable = ({ jwtToken, dispatch }) => {
   const { ingredientReducer, restaurantReducer } = useSelector(
     (store) => store
   );
+
+  const [isDelayedLoading, setIsDelayedLoading] = useState(true);
+  const isIngredientLoading = ingredientReducer.isLoading;
 
   const [open, setOpen] = useState(false);
   const handleOpenModalAddNewIngredient = () => setOpen(true);
@@ -129,6 +133,18 @@ const AdminIngredientTable = ({ jwtToken, dispatch }) => {
     },
   });
 
+  // hanlde loading :
+  useEffect(() => {
+    if (isIngredientLoading) {
+      setIsDelayedLoading(true);
+    } else {
+      const timer = setTimeout(() => {
+        setIsDelayedLoading(false);
+      }, 500);
+      return () => clearTimeout(timer);
+    }
+  }, [isIngredientLoading]);
+
   return (
     <div className="lg:col-span-8">
       <Card>
@@ -140,56 +156,62 @@ const AdminIngredientTable = ({ jwtToken, dispatch }) => {
             </IconButton>
           }
         />
-        <TableContainer>
-          <Table>
-            <TableHead>
-              <TableRow>
-                <TableCell align="center">Id</TableCell>
-                <TableCell align="center">Name</TableCell>
-                <TableCell align="center">Category</TableCell>
-                <TableCell align="center">Availability</TableCell>
-                <TableCell align="center">Action</TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {ingredientReducer.ingredients?.map((item) => (
-                <TableRow
-                  key={item.id}
-                  sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
-                >
-                  <TableCell align="center">{item.id}</TableCell>
-                  <TableCell align="center">{item.name}</TableCell>
-                  <TableCell align="center">{item.category.name}</TableCell>
-                  <TableCell align="center">
-                    {item.inStock ? (
-                      <Button
-                        variant="text"
-                        sx={{ color: "#26c665" }}
-                        onClick={() => handleUpdateStockStatus(item.id)}
-                      >
-                        In Stock
-                      </Button>
-                    ) : (
-                      <Button
-                        variant="text"
-                        onClick={() => handleUpdateStockStatus(item.id)}
-                      >
-                        Out of Stock
-                      </Button>
-                    )}
-                  </TableCell>
-                  <TableCell align="center">
-                    <IconButton
-                      onClick={() => handleOpenModalEditIngredient(item.id)}
-                    >
-                      <EditIcon color="info" />
-                    </IconButton>
-                  </TableCell>
+        {isDelayedLoading ? (
+          <div className="w-full min-h-[50vh] flex items-center justify-center">
+            <CircularProgress />
+          </div>
+        ) : (
+          <TableContainer>
+            <Table>
+              <TableHead>
+                <TableRow>
+                  <TableCell align="center">Id</TableCell>
+                  <TableCell align="center">Name</TableCell>
+                  <TableCell align="center">Category</TableCell>
+                  <TableCell align="center">Availability</TableCell>
+                  <TableCell align="center">Action</TableCell>
                 </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </TableContainer>
+              </TableHead>
+              <TableBody>
+                {ingredientReducer.ingredients?.map((item) => (
+                  <TableRow
+                    key={item.id}
+                    sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
+                  >
+                    <TableCell align="center">{item.id}</TableCell>
+                    <TableCell align="center">{item.name}</TableCell>
+                    <TableCell align="center">{item.category.name}</TableCell>
+                    <TableCell align="center">
+                      {item.inStock ? (
+                        <Button
+                          variant="text"
+                          sx={{ color: "#26c665" }}
+                          onClick={() => handleUpdateStockStatus(item.id)}
+                        >
+                          In Stock
+                        </Button>
+                      ) : (
+                        <Button
+                          variant="text"
+                          onClick={() => handleUpdateStockStatus(item.id)}
+                        >
+                          Out of Stock
+                        </Button>
+                      )}
+                    </TableCell>
+                    <TableCell align="center">
+                      <IconButton
+                        onClick={() => handleOpenModalEditIngredient(item.id)}
+                      >
+                        <EditIcon color="info" />
+                      </IconButton>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </TableContainer>
+        )}
       </Card>
 
       {/* Modal Add New Ingredient */}

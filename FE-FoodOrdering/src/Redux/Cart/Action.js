@@ -17,15 +17,11 @@ export const getCartAction = (jwtToken) => async (dispatch) => {
   }
 };
 
-export const getAllCartItemsAction = (jwtToken) => async (dispatch) => {
+export const getAllCartItemsAction = () => async (dispatch) => {
   dispatch({ type: actionTypes.GET_ALL_CART_ITEMS_REQUEST });
 
   try {
-    const response = await axiosAPI.get("/cart", {
-      headers: {
-        Authorization: "Bearer " + jwtToken,
-      },
-    });
+    const response = await axiosAPI.get("/cart");
 
     dispatch({
       type: actionTypes.GET_ALL_CART_ITEMS_SUCCESS,

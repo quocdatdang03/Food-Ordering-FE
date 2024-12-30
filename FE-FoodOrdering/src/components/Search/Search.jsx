@@ -18,7 +18,7 @@ const Search = () => {
   };
 
   useEffect(() => {
-    dispatch(searchMenuItemByKeywordAction(jwtToken, keyword));
+    dispatch(searchMenuItemByKeywordAction(keyword));
   }, [keyword]);
 
   return (

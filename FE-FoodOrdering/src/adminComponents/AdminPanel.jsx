@@ -92,7 +92,7 @@ const AdminPanel = () => {
 
   React.useEffect(() => {
     const restaurantId = restaurantReducer.ownerRestaurant?.id;
-    dispatch(getRestaurantCategoriesAction(jwtToken, restaurantId));
+    dispatch(getRestaurantCategoriesAction(restaurantId));
 
     dispatch(getIngredientsOfRestaurantAction(jwtToken, restaurantId));
 
@@ -103,9 +103,7 @@ const AdminPanel = () => {
       isSeasonal: false,
       foodCategory: "",
     };
-    dispatch(
-      getMenuItemsByRestaurantIdAction(jwtToken, requestDataOfMenuItems)
-    );
+    dispatch(getMenuItemsByRestaurantIdAction(requestDataOfMenuItems));
 
     const requestDataOfOrders = {
       restaurantId: restaurantId,

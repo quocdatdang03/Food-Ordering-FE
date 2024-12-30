@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import AdminCategoryTable from "./AdminCategoryTable";
 import {
   Backdrop,
@@ -6,6 +6,7 @@ import {
   Button,
   Card,
   CardHeader,
+  CircularProgress,
   Fade,
   IconButton,
   Modal,
@@ -16,7 +17,7 @@ import EditIcon from "@mui/icons-material/Edit";
 import AddCircleIcon from "@mui/icons-material/AddCircle";
 import { useFormik } from "formik";
 import { createCategoryFormValidation } from "../validation/createCategoryFormValidation";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { createRestaurantCategoryAction } from "../../Redux/Restaurant/Action";
 
 const style = {
@@ -40,6 +41,10 @@ const AdminCategory = () => {
   const dispatch = useDispatch();
   const jwtToken = localStorage.getItem("jwtToken");
 
+  const { restaurantReducer } = useSelector((store) => store);
+  const [isDelayedLoading, setIsDelayedLoading] = useState(true);
+  const isRestaurantCategoryLoading = restaurantReducer.isLoading;
+
   const [open, setOpen] = useState(false);
   const handleOpenModalAddNewCategory = () => setOpen(true);
 
@@ -60,6 +65,18 @@ const AdminCategory = () => {
     },
   });
 
+  // hanlde loading :
+  useEffect(() => {
+    if (isRestaurantCategoryLoading) {
+      setIsDelayedLoading(true);
+    } else {
+      const timer = setTimeout(() => {
+        setIsDelayedLoading(false);
+      }, 500);
+      return () => clearTimeout(timer);
+    }
+  }, [isRestaurantCategoryLoading]);
+
   return (
     <div className="grid grid-cols-1">
       <Card>
@@ -71,7 +88,13 @@ const AdminCategory = () => {
             </IconButton>
           }
         />
-        <AdminCategoryTable />
+        {isDelayedLoading ? (
+          <div className="w-full min-h-[50vh] flex items-center justify-center">
+            <CircularProgress />
+          </div>
+        ) : (
+          <AdminCategoryTable />
+        )}
       </Card>
 
       {/* Modal Add New Address */}

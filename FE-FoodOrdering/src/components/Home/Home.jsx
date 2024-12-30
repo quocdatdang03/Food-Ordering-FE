@@ -8,11 +8,10 @@ import { getAllRestaurantAction } from "../../Redux/Restaurant/Action";
 const Home = () => {
   const dispatch = useDispatch();
   const { restaurantReducer } = useSelector((store) => store);
-  const jwtToken = localStorage.getItem("jwtToken");
 
   useEffect(() => {
     // get all restaurants :
-    dispatch(getAllRestaurantAction(jwtToken));
+    dispatch(getAllRestaurantAction());
   }, []);
 
   console.log(restaurantReducer.restaurants);

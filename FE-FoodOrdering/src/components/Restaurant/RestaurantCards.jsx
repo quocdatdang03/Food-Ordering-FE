@@ -14,7 +14,7 @@ const RestaurantCards = ({ item }) => {
   const jwtToken = localStorage.getItem("jwtToken");
 
   const handleAddToFavorites = (item) => {
-    dispatch(addToFavoritesAction(jwtToken, item.id));
+    dispatch(addToFavoritesAction(item.id));
   };
 
   const handleNavigateToRestaurantDetails = () => {

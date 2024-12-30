@@ -16,7 +16,6 @@ export const menuItemReducer = (state = initialStates, action) => {
     case actionTypes.CREATE_MENU_ITEM_REQUEST:
     case actionTypes.GET_MENU_ITEM_BY_RESTAURANT_ID_REQUEST:
     case actionTypes.DELETE_MENU_ITEM_REQUEST:
-    case actionTypes.UPDATE_MENU_ITEM_AVAILABLE_REQUEST:
     case actionTypes.UPDATE_MENU_ITEM_REQUEST:
     case actionTypes.SEARCH_MENU_ITEM_REQUEST:
     case actionTypes.GET_MENU_ITEM_OF_CURRENT_RESTAURANT_BY_ID_REQUEST:

@@ -62,7 +62,6 @@ export const restaurantReducer = (state = initialStates, action) => {
     case DELETE_CATEGORY_REQUEST:
     case GET_RESTAURANTS_CATEGORY_REQUEST:
     case UPDATE_RESTAURANT_STATUS_REQUEST:
-    case GET_RESTAURANT_CATEGORY_BY_ID_REQUEST:
     case UPDATE_RESTAURANT_CATEGORY_REQUEST:
       return {
         ...state,

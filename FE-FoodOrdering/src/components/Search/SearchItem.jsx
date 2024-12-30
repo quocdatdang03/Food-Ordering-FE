@@ -64,7 +64,7 @@ const SearchItem = ({ item }) => {
     const getRestaurantById = async () => {
       try {
         const restaurantData = await dispatch(
-          getRestaurantByIdAction(jwtToken, item.restaurantId)
+          getRestaurantByIdAction(item.restaurantId)
         );
         setRestaurant(restaurantData); // Lưu vào state cục bộ
       } catch (error) {

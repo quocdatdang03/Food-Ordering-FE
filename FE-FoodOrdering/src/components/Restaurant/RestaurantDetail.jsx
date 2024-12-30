@@ -1,6 +1,7 @@
 import {
   Breadcrumbs,
   Card,
+  CircularProgress,
   Divider,
   FormControl,
   FormControlLabel,
@@ -20,6 +21,7 @@ import {
   getRestaurantCategoriesAction,
 } from "../../Redux/Restaurant/Action";
 import { getMenuItemsByRestaurantIdAction } from "../../Redux/Menu/Action";
+import Loading from "../Loading/Loading";
 
 const foodTypes = [
   { label: "All", value: "" },
@@ -40,6 +42,7 @@ const foodCategories = [
 const RestaurantDetail = () => {
   const [foodType, setFoodtype] = useState("");
   const [foodCategory, setFoodCategory] = useState("all");
+  const [isDelayedLoading, setIsDelayedLoading] = useState(true);
 
   const handleChangeFoodType = (e) => {
     console.log(e.target.value + " - " + e.target.name);
@@ -59,10 +62,10 @@ const RestaurantDetail = () => {
 
   useEffect(() => {
     // get restaurant details by id
-    dispatch(getRestaurantByIdAction(jwtToken, id));
+    dispatch(getRestaurantByIdAction(id));
 
     // get categories of restaurant
-    dispatch(getRestaurantCategoriesAction(jwtToken, id));
+    dispatch(getRestaurantCategoriesAction(id));
 
     // get all foods of restaurant (this is also using for filtering foods)
     const requestFoodData = {
@@ -72,7 +75,7 @@ const RestaurantDetail = () => {
       isSeasonal: false,
       foodCategoy: "",
     };
-    dispatch(getMenuItemsByRestaurantIdAction(jwtToken, requestFoodData));
+    dispatch(getMenuItemsByRestaurantIdAction(requestFoodData));
   }, []);
 
   // Filter foods by categories and Food Type
@@ -88,8 +91,25 @@ const RestaurantDetail = () => {
 
     console.log(requestFoodData);
 
-    dispatch(getMenuItemsByRestaurantIdAction(jwtToken, requestFoodData));
+    dispatch(getMenuItemsByRestaurantIdAction(requestFoodData));
   }, [foodCategory, foodType]);
+
+  useEffect(() => {
+    if (menuItemReducer.isLoading) {
+      setIsDelayedLoading(true);
+    } else {
+      const timer = setTimeout(() => {
+        setIsDelayedLoading(false);
+      }, 500);
+      return () => clearTimeout(timer);
+    }
+  }, [menuItemReducer.isLoading]);
+
+  const isRestaurantLoading = restaurantReducer.isLoading;
+  const isMenuItemLoading = menuItemReducer.isLoading;
+  if (isRestaurantLoading) {
+    return <Loading />;
+  }
 
   return (
     <div className="px-5 lg:px-20 mt-9">
@@ -193,9 +213,19 @@ const RestaurantDetail = () => {
           </Card>
         </div>
         <div className="col-span-9 flex flex-col gap-y-8">
-          {menuItemReducer?.menuItems.map((item) => {
-            return <MenuCards key={item.id} item={item} />;
-          })}
+          {isDelayedLoading || isMenuItemLoading ? (
+            <div className="w-full h-full flex justify-center items-center">
+              <CircularProgress />
+            </div>
+          ) : menuItemReducer?.menuItems.length > 0 ? (
+            menuItemReducer?.menuItems.map((item) => {
+              return <MenuCards key={item.id} item={item} />;
+            })
+          ) : (
+            <h1 className="text-2xl text-gray-400 text-center">
+              No food found
+            </h1>
+          )}
         </div>
       </div>
     </div>

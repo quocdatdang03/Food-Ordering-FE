@@ -4,6 +4,7 @@ import {
   Button,
   Card,
   CardHeader,
+  CircularProgress,
   Fade,
   IconButton,
   Modal,
@@ -49,6 +50,10 @@ const AdminIngredientCategoryTable = ({ jwtToken, dispatch }) => {
   const { ingredientReducer, restaurantReducer } = useSelector(
     (store) => store
   );
+
+  const [isDelayedLoading, setIsDelayedLoading] = useState(true);
+  const isIngredientCategoryLoading =
+    ingredientReducer.isIngredientCategoryLoading;
 
   const [open, setOpen] = useState(false);
   const [openEdit, setOpenEdit] = useState(false);
@@ -105,6 +110,18 @@ const AdminIngredientCategoryTable = ({ jwtToken, dispatch }) => {
     },
   });
 
+  // hanlde loading :
+  useEffect(() => {
+    if (isIngredientCategoryLoading) {
+      setIsDelayedLoading(true);
+    } else {
+      const timer = setTimeout(() => {
+        setIsDelayedLoading(false);
+      }, 500);
+      return () => clearTimeout(timer);
+    }
+  }, [isIngredientCategoryLoading]);
+
   return (
     <div className="lg:col-span-4">
       <Card>
@@ -116,37 +133,44 @@ const AdminIngredientCategoryTable = ({ jwtToken, dispatch }) => {
             </IconButton>
           }
         />
-        <TableContainer>
-          <Table>
-            <TableHead>
-              <TableRow>
-                <TableCell align="center">Id</TableCell>
-                <TableCell align="center">Name</TableCell>
-                <TableCell align="center">Action</TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {ingredientReducer.ingredientCategories?.map((item) => (
-                <TableRow
-                  key={item.id}
-                  sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
-                >
-                  <TableCell align="center">{item.id}</TableCell>
-                  <TableCell align="center">{item.name}</TableCell>
-                  <TableCell align="center">
-                    <IconButton
-                      onClick={() =>
-                        handleOpenModalEditIngredientCategory(item.id)
-                      }
-                    >
-                      <EditIcon color="info" />
-                    </IconButton>
-                  </TableCell>
+
+        {isDelayedLoading ? (
+          <div className="w-full min-h-[50vh] flex items-center justify-center">
+            <CircularProgress />
+          </div>
+        ) : (
+          <TableContainer>
+            <Table>
+              <TableHead>
+                <TableRow>
+                  <TableCell align="center">Id</TableCell>
+                  <TableCell align="center">Name</TableCell>
+                  <TableCell align="center">Action</TableCell>
                 </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </TableContainer>
+              </TableHead>
+              <TableBody>
+                {ingredientReducer.ingredientCategories?.map((item) => (
+                  <TableRow
+                    key={item.id}
+                    sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
+                  >
+                    <TableCell align="center">{item.id}</TableCell>
+                    <TableCell align="center">{item.name}</TableCell>
+                    <TableCell align="center">
+                      <IconButton
+                        onClick={() =>
+                          handleOpenModalEditIngredientCategory(item.id)
+                        }
+                      >
+                        <EditIcon color="info" />
+                      </IconButton>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </TableContainer>
+        )}
       </Card>
 
       {/* Modal Add New Ingredient Category */}

@@ -3,6 +3,7 @@ import { Route, Routes } from "react-router-dom";
 import CreateRestaurantForm from "../adminComponents/CreateRestaurantForm";
 import AdminPanel from "../adminComponents/AdminPanel";
 import { useSelector } from "react-redux";
+import Loading from "../adminComponents/Loading/Loading";
 
 const AdminRouter = () => {
   const { restaurantReducer } = useSelector((store) => store);
@@ -13,7 +14,7 @@ const AdminRouter = () => {
         <Route
           path="/*"
           element={
-            restaurantReducer.ownerRestaurant ? (
+            restaurantReducer?.ownerRestaurant ? (
               <AdminPanel />
             ) : (
               <CreateRestaurantForm />

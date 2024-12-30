@@ -45,17 +45,13 @@ export const createMenuItemAction =
 
 // THIS IS ALSO USE FOR FILTERING
 export const getMenuItemsByRestaurantIdAction =
-  (jwtToken, requestData) => async (dispatch) => {
+  (requestData) => async (dispatch) => {
     dispatch({ type: GET_MENU_ITEM_BY_RESTAURANT_ID_REQUEST });
 
     try {
       const requestURL = `/foods/restaurant/${requestData.restaurantId}?isVegetarian=${requestData.isVegetarian}&isNonVegetarian=${requestData.isNonVegetarian}&isSeasonal=${requestData.isSeasonal}&foodCategory=${requestData.foodCategory}`;
       console.log(requestURL);
-      const response = await axiosAPI.get(requestURL, {
-        headers: {
-          Authorization: "Bearer " + jwtToken,
-        },
-      });
+      const response = await axiosAPI.get(requestURL);
 
       dispatch({
         type: GET_MENU_ITEM_BY_RESTAURANT_ID_SUCCESS,
@@ -73,23 +69,18 @@ export const getMenuItemsByRestaurantIdAction =
     }
   };
 
-export const searchMenuItemByKeywordAction =
-  (jwtToken, keyword) => async (dispatch) => {
-    dispatch({ type: SEARCH_MENU_ITEM_REQUEST });
+export const searchMenuItemByKeywordAction = (keyword) => async (dispatch) => {
+  dispatch({ type: SEARCH_MENU_ITEM_REQUEST });
 
-    try {
-      const response = await axiosAPI.get(`/foods/search?keyword=${keyword}`, {
-        headers: {
-          Authorization: "Bearer " + jwtToken,
-        },
-      });
+  try {
+    const response = await axiosAPI.get(`/foods/search?keyword=${keyword}`);
 
-      dispatch({ type: SEARCH_MENU_ITEM_SUCCESS, payload: response.data });
-    } catch (error) {
-      console.log(error);
-      dispatch({ type: SEARCH_MENU_ITEM_FAILURE, payload: error });
-    }
-  };
+    dispatch({ type: SEARCH_MENU_ITEM_SUCCESS, payload: response.data });
+  } catch (error) {
+    console.log(error);
+    dispatch({ type: SEARCH_MENU_ITEM_FAILURE, payload: error });
+  }
+};
 
 export const updateMenuItemAvailableAction =
   (jwtToken, foodId) => async (dispatch) => {
