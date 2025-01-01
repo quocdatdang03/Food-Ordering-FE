@@ -56,18 +56,16 @@ const RestaurantCards = ({ item }) => {
           </h1>
           <p className="text-sm text-gray-400">{item.description}</p>
         </div>
-        {isRoleCustomer && (
-          <IconButton
-            className="inline-block"
-            onClick={() => handleAddToFavorites(item)}
-          >
-            {isPresentInFavorites(authReducer.favorites, item) ? (
-              <FavoriteIcon className="text-pink-600" />
-            ) : (
-              <FavoriteBorderIcon />
-            )}
-          </IconButton>
-        )}
+        <IconButton
+          className="inline-block"
+          onClick={() => handleAddToFavorites(item)}
+        >
+          {isPresentInFavorites(authReducer.favorites, item) ? (
+            <FavoriteIcon className="text-pink-600" />
+          ) : (
+            <FavoriteBorderIcon />
+          )}
+        </IconButton>
       </div>
     </Card>
   );

@@ -18,10 +18,18 @@ import {
   REGISTER_USER_FAILURE,
   REGISTER_USER_REQUEST,
   REGISTER_USER_SUCCESS,
+  RESEND_CODE_FAILURE,
+  RESEND_CODE_REQUEST,
+  RESEND_CODE_SUCCESS,
+  VERIFY_EMAIL_FAILURE,
+  VERIFY_EMAIL_REQUEST,
+  VERIFY_EMAIL_SUCCESS,
 } from "./ActionType";
 
 const initialState = {
   user: null,
+  registerUser: null,
+  registerEmail: null,
   favorites: [],
   jwtToken: null,
   success: null,
@@ -36,6 +44,8 @@ export const authReducer = (state = initialState, action) => {
     case GET_USER_REQUEST:
     case ADD_TO_FAVORITE_REQUEST:
     case REFRESH_TOKEN_REQUEST:
+    case VERIFY_EMAIL_REQUEST:
+    case RESEND_CODE_REQUEST:
       return {
         ...state,
         isLoading: true,
@@ -48,6 +58,7 @@ export const authReducer = (state = initialState, action) => {
         ...state,
         isLoading: false,
         error: null,
+        registerEmail: action.payload.registerEmail,
         success: action.payload.messageSuccess,
       };
     case LOGIN_USER_SUCCESS:
@@ -83,6 +94,22 @@ export const authReducer = (state = initialState, action) => {
           : [action.payload, ...state.favorites], // add to favorites
       };
 
+    case VERIFY_EMAIL_SUCCESS:
+      return {
+        ...state,
+        isLoading: false,
+        error: null,
+        success: action.payload,
+      };
+
+    case RESEND_CODE_SUCCESS:
+      return {
+        ...state,
+        isLoading: false,
+        error: null,
+        success: "Verification code has been sent successfully",
+      };
+
     case LOGOUT:
       return initialState;
 
@@ -91,6 +118,8 @@ export const authReducer = (state = initialState, action) => {
     case GET_USER_FAILURE:
     case ADD_TO_FAVORITE_FAILURE:
     case REFRESH_TOKEN_FAILURE:
+    case VERIFY_EMAIL_FAILURE:
+    case RESEND_CODE_FAILURE:
       return {
         ...state,
         isLoading: false,

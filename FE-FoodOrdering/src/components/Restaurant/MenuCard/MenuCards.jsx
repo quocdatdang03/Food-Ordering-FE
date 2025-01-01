@@ -97,19 +97,17 @@ const MenuCards = ({ item }) => {
                 );
               })}
             </div>
-            {isRoleCustomer && (
-              <>
-                {item?.available ? (
-                  <Button variant="contained" onClick={handleAddTocart}>
-                    Add to cart
-                  </Button>
-                ) : (
-                  <Button disabled color="error">
-                    Out of Stock
-                  </Button>
-                )}
-              </>
-            )}
+            <>
+              {item?.available ? (
+                <Button variant="contained" onClick={handleAddTocart}>
+                  Add to cart
+                </Button>
+              ) : (
+                <Button disabled color="error">
+                  Out of Stock
+                </Button>
+              )}
+            </>
           </form>
         </AccordionDetails>
       </Accordion>

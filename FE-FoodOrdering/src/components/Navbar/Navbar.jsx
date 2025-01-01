@@ -57,18 +57,16 @@ const Navbar = () => {
             </IconButton>
           )}
         </div>
-        {isRoleCustomer && (
-          <div>
-            <IconButton>
-              <Badge
-                color="secondary"
-                badgeContent={cartReducer.cartItems.length}
-              >
-                <ShoppingCartIcon onClick={() => navigate("/cart")} />
-              </Badge>
-            </IconButton>
-          </div>
-        )}
+        <div>
+          <IconButton>
+            <Badge
+              color="secondary"
+              badgeContent={cartReducer.cartItems.length}
+            >
+              <ShoppingCartIcon onClick={() => navigate("/cart")} />
+            </Badge>
+          </IconButton>
+        </div>
       </div>
     </div>
   );

@@ -38,16 +38,24 @@ axiosAPI.interceptors.response.use(
   (response) => response,
   async (error) => {
     const originalRequest = error.config;
-    if (error.response?.status === 401 && !originalRequest._retry) {
+    console.log(error.response?.data?.message);
+    if (
+      error.response?.status === 401 &&
+      !originalRequest._retry &&
+      (error.response?.data?.message === "Invalid jwt token" ||
+        error.response?.data?.message === "Expired jwt token" ||
+        error.response?.data?.message === "Unsupported jwt token" ||
+        error.response?.data?.message === "Jwt claims string is empty")
+    ) {
       originalRequest._retry = true;
 
       try {
         // Taking old session to refresh
         const refreshToken = localStorage.getItem("refreshToken");
 
-        if (!refreshToken) {
-          throw new Error("No refresh token available");
-        }
+        // if (!refreshToken) {
+        //   throw new Error("No refresh token available");
+        // }
 
         const response = await axiosRefresh.post("/auth/refreshToken", {
           refreshToken: refreshToken,

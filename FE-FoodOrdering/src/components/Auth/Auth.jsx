@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import RegisterForm from "./RegisterForm";
 import LoginForm from "./LoginForm";
+import VerificationForm from "./VerificationForm";
 
 const style = {
   position: "absolute",
@@ -42,6 +43,7 @@ const Auth = () => {
       </a>
       {location.pathname === "/account/register" && <RegisterForm />}
       {location.pathname === "/account/login" && <LoginForm />}
+      {location.pathname === "/account/verify-email" && <VerificationForm />}
     </div>
   );
 };

@@ -1,6 +1,7 @@
 import {
   Alert,
   Button,
+  CircularProgress,
   FormControl,
   InputLabel,
   MenuItem,
@@ -8,7 +9,7 @@ import {
   TextField,
 } from "@mui/material";
 import { useFormik } from "formik";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { registerFormValidation } from "./validation/registerFormValidation";
 import { useDispatch, useSelector } from "react-redux";
@@ -30,6 +31,8 @@ const RegisterForm = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { authReducer } = useSelector((store) => store);
+  const [isDelayedLoading, setIsDelayedLoading] = useState(false);
+  const isAuthLoading = authReducer.isLoading;
 
   // Handling Form :
   const formik = useFormik({
@@ -39,6 +42,7 @@ const RegisterForm = () => {
       const requestData = {
         userData: values,
         navigate,
+        isAuthLoading,
       };
 
       dispatch(registerUserAction(requestData));
@@ -55,6 +59,19 @@ const RegisterForm = () => {
       if (authReducer.success) dispatch(clearAuthSuccess());
     };
   }, [dispatch, authReducer.error, authReducer.success]);
+
+  // handle loading :
+  useEffect(() => {
+    if (isAuthLoading) {
+      setIsDelayedLoading(true);
+    } else {
+      const timer = setTimeout(() => {
+        setIsDelayedLoading(false);
+      }, 800);
+
+      return () => clearTimeout(timer);
+    }
+  }, [isAuthLoading]);
 
   return (
     <div className="w-full rounded lg shadow md:mt-0 sm:max-w-lg xl:p-0">
@@ -191,7 +208,11 @@ const RegisterForm = () => {
               sx={{ paddingY: 1 }}
               type="submit"
             >
-              Sign Up
+              {isDelayedLoading ? (
+                <CircularProgress style={{ color: "white" }} />
+              ) : (
+                "Sign Up"
+              )}
             </Button>
           </div>
         </form>
