@@ -186,7 +186,10 @@ const LoginForm = () => {
             </span>
           </p>
           <p className="text-center">
-            <span className="cursor-pointer hover:underline text-pink-500">
+            <span
+              className="cursor-pointer hover:underline text-pink-500"
+              onClick={() => navigate("/account/forgot-password")}
+            >
               Forgot password?
             </span>
           </p>

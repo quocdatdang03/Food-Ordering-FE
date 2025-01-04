@@ -5,6 +5,9 @@ import { useLocation, useNavigate } from "react-router-dom";
 import RegisterForm from "./RegisterForm";
 import LoginForm from "./LoginForm";
 import VerificationForm from "./VerificationForm";
+import ForgotPasswordForm from "./ForgotPasswordForm";
+import SendEmailForgotPasswordSuccess from "./SendEmailForgotPasswordSuccess";
+import ResetPasswordForm from "./ResetPasswordForm";
 
 const style = {
   position: "absolute",
@@ -44,6 +47,13 @@ const Auth = () => {
       {location.pathname === "/account/register" && <RegisterForm />}
       {location.pathname === "/account/login" && <LoginForm />}
       {location.pathname === "/account/verify-email" && <VerificationForm />}
+      {location.pathname === "/account/forgot-password" && (
+        <ForgotPasswordForm />
+      )}
+      {location.pathname === "/account/forgot-password-success" && (
+        <SendEmailForgotPasswordSuccess />
+      )}
+      {location.pathname === "/account/reset-password" && <ResetPasswordForm />}
     </div>
   );
 };

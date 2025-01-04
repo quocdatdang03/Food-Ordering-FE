@@ -15,7 +15,7 @@ const RestaurantCards = ({ item }) => {
   const isRoleCustomer = authReducer.user?.role === "ROLE_CUSTOMER";
 
   const handleAddToFavorites = (item) => {
-    dispatch(addToFavoritesAction(item.id));
+    dispatch(addToFavoritesAction(jwtToken, item.id));
   };
 
   const handleNavigateToRestaurantDetails = () => {

@@ -5,6 +5,9 @@ import {
   ADD_TO_FAVORITE_SUCCESS,
   CLEAR_AUTH_ERROR,
   CLEAR_AUTH_SUCCESS,
+  GET_RESET_PASSWORD_INFO_FAILURE,
+  GET_RESET_PASSWORD_INFO_REQUEST,
+  GET_RESET_PASSWORD_INFO_SUCCESS,
   GET_USER_FAILURE,
   GET_USER_REQUEST,
   GET_USER_SUCCESS,
@@ -21,6 +24,12 @@ import {
   RESEND_CODE_FAILURE,
   RESEND_CODE_REQUEST,
   RESEND_CODE_SUCCESS,
+  RESET_PASSWORD_FAILURE,
+  RESET_PASSWORD_REQUEST,
+  RESET_PASSWORD_SUCCESS,
+  SEND_RESET_PASSWORD_EMAIL_FAILURE,
+  SEND_RESET_PASSWORD_EMAIL_REQUEST,
+  SEND_RESET_PASSWORD_EMAIL_SUCCESS,
   VERIFY_EMAIL_FAILURE,
   VERIFY_EMAIL_REQUEST,
   VERIFY_EMAIL_SUCCESS,
@@ -30,6 +39,8 @@ const initialState = {
   user: null,
   registerUser: null,
   registerEmail: null,
+  resetPasswordEmail: null,
+  resetPasswordInfo: null,
   favorites: [],
   jwtToken: null,
   success: null,
@@ -46,11 +57,21 @@ export const authReducer = (state = initialState, action) => {
     case REFRESH_TOKEN_REQUEST:
     case VERIFY_EMAIL_REQUEST:
     case RESEND_CODE_REQUEST:
+    case SEND_RESET_PASSWORD_EMAIL_REQUEST:
+    case RESET_PASSWORD_REQUEST:
       return {
         ...state,
         isLoading: true,
         error: null,
         sucess: null,
+      };
+
+    case GET_RESET_PASSWORD_INFO_REQUEST:
+      return {
+        ...state,
+        isVerifyResetPasswordInfoLoading: true,
+        error: null,
+        success: null,
       };
 
     case REGISTER_USER_SUCCESS:
@@ -110,6 +131,31 @@ export const authReducer = (state = initialState, action) => {
         success: "Verification code has been sent successfully",
       };
 
+    case SEND_RESET_PASSWORD_EMAIL_SUCCESS:
+      return {
+        ...state,
+        isLoading: false,
+        error: null,
+        resetPasswordEmail: action.payload.resetPasswordEmail,
+        success: action.payload.messageSuccess,
+      };
+
+    case GET_RESET_PASSWORD_INFO_SUCCESS:
+      return {
+        ...state,
+        isVerifyResetPasswordInfoLoading: false,
+        error: null,
+        resetPasswordInfo: action.payload,
+      };
+
+    case RESET_PASSWORD_SUCCESS:
+      return {
+        ...state,
+        isLoading: false,
+        error: null,
+        success: action.payload,
+      };
+
     case LOGOUT:
       return initialState;
 
@@ -120,6 +166,8 @@ export const authReducer = (state = initialState, action) => {
     case REFRESH_TOKEN_FAILURE:
     case VERIFY_EMAIL_FAILURE:
     case RESEND_CODE_FAILURE:
+    case SEND_RESET_PASSWORD_EMAIL_FAILURE:
+    case RESET_PASSWORD_FAILURE:
       return {
         ...state,
         isLoading: false,
@@ -127,6 +175,13 @@ export const authReducer = (state = initialState, action) => {
         success: null,
       };
 
+    case GET_RESET_PASSWORD_INFO_FAILURE:
+      return {
+        ...state,
+        isVerifyResetPasswordInfoLoading: false,
+        error: action.payload,
+        success: null,
+      };
     case CLEAR_AUTH_ERROR:
       return {
         ...state,

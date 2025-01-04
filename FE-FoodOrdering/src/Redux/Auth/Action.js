@@ -5,6 +5,9 @@ import {
   ADD_TO_FAVORITE_SUCCESS,
   CLEAR_AUTH_ERROR,
   CLEAR_AUTH_SUCCESS,
+  GET_RESET_PASSWORD_INFO_FAILURE,
+  GET_RESET_PASSWORD_INFO_REQUEST,
+  GET_RESET_PASSWORD_INFO_SUCCESS,
   GET_USER_FAILURE,
   GET_USER_REQUEST,
   GET_USER_SUCCESS,
@@ -21,6 +24,12 @@ import {
   RESEND_CODE_FAILURE,
   RESEND_CODE_REQUEST,
   RESEND_CODE_SUCCESS,
+  RESET_PASSWORD_FAILURE,
+  RESET_PASSWORD_REQUEST,
+  RESET_PASSWORD_SUCCESS,
+  SEND_RESET_PASSWORD_EMAIL_FAILURE,
+  SEND_RESET_PASSWORD_EMAIL_REQUEST,
+  SEND_RESET_PASSWORD_EMAIL_SUCCESS,
   VERIFY_EMAIL_FAILURE,
   VERIFY_EMAIL_REQUEST,
   VERIFY_EMAIL_SUCCESS,
@@ -186,20 +195,27 @@ export const getUserAction = () => async (dispatch) => {
   }
 };
 
-export const addToFavoritesAction = (restaurantId) => async (dispatch) => {
-  dispatch({ type: ADD_TO_FAVORITE_REQUEST });
-  try {
-    const response = await axiosAPI.put(
-      "/restaurants/" + restaurantId + "/favorites"
-    );
+export const addToFavoritesAction =
+  (jwtToken, restaurantId) => async (dispatch) => {
+    dispatch({ type: ADD_TO_FAVORITE_REQUEST });
+    try {
+      const response = await axiosAPI.put(
+        "/restaurants/" + restaurantId + "/favorites",
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${jwtToken}`,
+          },
+        }
+      );
 
-    dispatch({ type: ADD_TO_FAVORITE_SUCCESS, payload: response.data });
-    console.log("ADD TO FAVORITES SUCCESS", response.data);
-  } catch (error) {
-    dispatch({ type: ADD_TO_FAVORITE_FAILURE, payload: error });
-    console.log(error);
-  }
-};
+      dispatch({ type: ADD_TO_FAVORITE_SUCCESS, payload: response.data });
+      console.log("ADD TO FAVORITES SUCCESS", response.data);
+    } catch (error) {
+      dispatch({ type: ADD_TO_FAVORITE_FAILURE, payload: error });
+      console.log(error);
+    }
+  };
 
 export const logoutAction = () => async (dispatch) => {
   try {
@@ -232,6 +248,7 @@ export const clearAuthSuccess = () => async (dispatch) => {
   }
 };
 
+/******************  Handle verify account *******************/
 export const verifyEmailAction = (requestData) => async (dispatch) => {
   dispatch({ type: VERIFY_EMAIL_REQUEST });
   try {
@@ -273,3 +290,70 @@ export const resendCodeAction = (requestData) => async (dispatch) => {
     console.log(error);
   }
 };
+/******************  End Handle verify account *******************/
+
+/******************  Handle Reset password *******************/
+export const sendResetPasswordEmailAction =
+  (requestData) => async (dispatch) => {
+    dispatch({ type: SEND_RESET_PASSWORD_EMAIL_REQUEST });
+    try {
+      const response = await axiosAPI.post(
+        "/auth/forgotPassword?email=" + requestData.email
+      );
+
+      dispatch({
+        type: SEND_RESET_PASSWORD_EMAIL_SUCCESS,
+        payload: {
+          resetPasswordEmail: requestData.email,
+          messageSuccess: response.data,
+        },
+      });
+
+      if (response.data && !requestData.isAuthLoading && !requestData.isResend)
+        requestData.navigate("/account/forgot-password-success");
+    } catch (error) {
+      const errorMessage = error.response?.data?.message || error.message;
+      dispatch({
+        type: SEND_RESET_PASSWORD_EMAIL_FAILURE,
+        payload: errorMessage,
+      });
+    }
+  };
+
+export const verifyResetPasswordInfoAction =
+  (requestData) => async (dispatch) => {
+    dispatch({ type: GET_RESET_PASSWORD_INFO_REQUEST });
+    try {
+      const response = await axiosAPI.post("/auth/resetPassword", requestData);
+
+      dispatch({
+        type: GET_RESET_PASSWORD_INFO_SUCCESS,
+        payload: response.data,
+      });
+
+      console.log(response.data);
+    } catch (error) {
+      const errorMessage = error.response?.data?.message || error.message;
+      dispatch({
+        type: GET_RESET_PASSWORD_INFO_FAILURE,
+        payload: errorMessage,
+      });
+    }
+  };
+
+export const resetPasswordAction =
+  (requestData, navigate, isAuthLoading) => async (dispatch) => {
+    dispatch({ type: RESET_PASSWORD_REQUEST });
+
+    try {
+      const response = await axiosAPI.put("/auth/resetPassword", requestData);
+
+      dispatch({ type: RESET_PASSWORD_SUCCESS, payload: response.data });
+
+      if (response.data && !isAuthLoading) navigate("/account/login");
+    } catch (error) {
+      const errorMessage = error.response?.data?.message || error.message;
+      dispatch({ type: RESET_PASSWORD_FAILURE, payload: errorMessage });
+    }
+  };
+/****************** End Handle Reset password *******************/
